@@ -23,7 +23,9 @@ import com.lestarieragemilang.app.desktop.Dao.Transactions.Implement.SaleDaoImpl
 import com.lestarieragemilang.app.desktop.Entities.Transactions.Invoice;
 import com.lestarieragemilang.app.desktop.Entities.Transactions.Purchasing;
 import com.lestarieragemilang.app.desktop.Entities.Transactions.Sales;
+import com.lestarieragemilang.app.desktop.Utilities.BuyTablePopulator;
 import com.lestarieragemilang.app.desktop.Utilities.GenerateRandomID;
+import com.lestarieragemilang.app.desktop.Utilities.SellTablePopulator;
 
 public class TransactionForms {
 
@@ -72,6 +74,9 @@ public class TransactionForms {
     private ObservableList<Purchasing> buyData = FXCollections.observableArrayList();
     private ObservableList<Sales> sellData = FXCollections.observableArrayList();
 
+    private BuyTablePopulator buyTablePopulator = new BuyTablePopulator();
+    private SellTablePopulator sellTablePopulator = new SellTablePopulator();
+
     public void setBuyDao(BuyDaoImpl buyDao) {
         this.buyDao = buyDao;
     }
@@ -88,23 +93,7 @@ public class TransactionForms {
         buyInvoiceNumber.setText(String.valueOf(generateRandomID));
         sellInvoiceNumber.setText(String.valueOf(generateRandomID));
 
-        sellDateCol.setCellValueFactory(new PropertyValueFactory<>("invoiceDate"));
-        sellInvoiceCol.setCellValueFactory(new PropertyValueFactory<>("invoiceNumber"));
-        sellOnCustomerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        sellBrandCol.setCellValueFactory(new PropertyValueFactory<>("brand"));
-        sellTypeCol.setCellValueFactory(new PropertyValueFactory<>("productType"));
-        sellTotalCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        sellPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
-        sellSubTotalCol.setCellValueFactory(new PropertyValueFactory<>("subTotal"));
-
-        buyDateCol.setCellValueFactory(new PropertyValueFactory<>("invoiceDate"));
-        buyInvoiceCol.setCellValueFactory(new PropertyValueFactory<>("invoiceNumber"));
-        buyOnSupplierNameCol.setCellValueFactory(new PropertyValueFactory<>("supplierName"));
-        buyBrandCol.setCellValueFactory(new PropertyValueFactory<>("brand"));
-        buyTypeCol.setCellValueFactory(new PropertyValueFactory<>("productType"));
-        buyTotalCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        buyPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
-        buySubTotalCol.setCellValueFactory(new PropertyValueFactory<>("subTotal"));
+        tablePopulator();
 
         buyTable.setItems(buyData);
         sellTable.setItems(sellData);
@@ -122,6 +111,35 @@ public class TransactionForms {
         System.out.println("buyDate: " + buyDate.getValue());
         System.out.println("sellDate: " + sellDate.getValue());
 
+    }
+
+    private void tablePopulator() {
+        try {
+            buyTablePopulator.populateBuyTable(
+                    buySubTotalCol,
+                    buyDateCol,
+                    buyInvoiceCol,
+                    buyOnSupplierNameCol,
+                    buyBrandCol,
+                    buyTypeCol,
+                    buyTotalCol,
+                    buyPriceCol,
+                    buyTable);
+
+            sellTablePopulator.populateSellTable(
+                    sellSubTotalCol,
+                    sellDateCol,
+                    sellInvoiceCol,
+                    sellOnCustomerNameCol,
+                    sellBrandCol,
+                    sellTypeCol,
+                    sellTotalCol,
+                    sellPriceCol,
+                    sellTable);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadBuyData() {
