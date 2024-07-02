@@ -21,7 +21,7 @@
    <children>
       <AnchorPane prefHeight="585.0" prefWidth="970.0">
          <children>
-            <TabPane layoutX="153.0" layoutY="132.0" prefHeight="200.0" prefWidth="200.0" style="-fx-tab-min-width: 124; -fx-tab-min-height: 50;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TabPane fx:id="tabPane" layoutX="153.0" layoutY="132.0" prefHeight="200.0" prefWidth="200.0" style="-fx-tab-min-width: 124; -fx-tab-min-height: 50;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <tabs>
                   <Tab closable="false" text="PEMBELIAN">
                      <content>

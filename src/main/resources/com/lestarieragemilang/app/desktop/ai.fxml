@@ -12,12 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lestarieragemilang.app.desktop.Controller.AI">
    <children>
       <AnchorPane prefHeight="570.0" prefWidth="970.0">
          <children>
-            <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="53.0" prefWidth="943.0" spacing="30.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="53.0" prefWidth="943.0" spacing="15.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
                   <Separator maxWidth="20.0" orientation="VERTICAL" prefHeight="20.0" prefWidth="2.0" />
                   <Label text="Laporan dengan AI">
@@ -25,6 +24,14 @@
                         <Font size="30.0" />
                      </font>
                   </Label>
+                  <ImageView fitHeight="40.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Assets/Images/Gemini_language_model_logo.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets bottom="10.0" />
+                     </HBox.margin>
+                  </ImageView>
                   <Separator maxWidth="20.0" orientation="VERTICAL" prefHeight="20.0" prefWidth="2.0" />
                </children>
             </HBox>
@@ -43,22 +50,13 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </ScrollPane>
-            <HBox alignment="CENTER" layoutX="10.0" layoutY="120.0" prefHeight="40.0" prefWidth="425.0" spacing="10.0" AnchorPane.leftAnchor="10.0">
+            <HBox alignment="BASELINE_LEFT" layoutX="10.0" layoutY="120.0" prefHeight="40.0" prefWidth="425.0" spacing="10.0" AnchorPane.leftAnchor="10.0">
                <children>
                   <JFXButton fx:id="aiGenerateButton" buttonType="RAISED" onAction="#aiGenerateReportButton" prefHeight="40.0" prefWidth="133.0" style="-fx-background-color: #E9E7DF; -fx-background-radius: 15; -fx-border-radius: 15; -fx-cursor: hand;" text="Hasilkan Laporan ֎" wrapText="true">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </JFXButton>
-                  <Label prefHeight="17.0" prefWidth="212.0" text="Output yang dihasilkan menggunakan..." underline="true" />
-                  <ImageView fitHeight="35.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@Assets/Images/Gemini_language_model_logo.png" />
-                     </image>
-                     <HBox.margin>
-                        <Insets bottom="5.0" />
-                     </HBox.margin>
-                  </ImageView>
                </children>
             </HBox>
          </children>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 29, 2024 at 12:23 AM
+-- Generation Time: Jul 02, 2024 at 10:01 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `steel_shop`
+-- Database: `lestarieragemilang`
 --
 
 -- --------------------------------------------------------
@@ -35,14 +35,6 @@ CREATE TABLE `auth` (
   `account_status` enum('active','locked','pending_verification') NOT NULL DEFAULT 'pending_verification'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `auth`
---
-
-INSERT INTO `auth` (`id`, `password_hash`, `salt`, `password_reset_token`, `account_status`) VALUES
-(1, '$2a$10$iEgSGeCjzW0.HAnqzO4.Vu4jeF0onjSewle7Q8QU/pOqaPgpACOWC', '$2a$10$iEgSGeCjzW0.HAnqzO4.Vu', NULL, 'pending_verification'),
-(2, '$2a$10$7Q.Aor5QPtOhX9J7mnh7KO.Fk3xt8Izf2Gb287WEEQcaXR1MQmCdy', '$2a$10$7Q.Aor5QPtOhX9J7mnh7KO', NULL, 'pending_verification');
-
 -- --------------------------------------------------------
 
 --
@@ -58,20 +50,6 @@ CREATE TABLE `categories` (
   `weight_unit` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `categories`
---
-
-INSERT INTO `categories` (`category_id`, `brand`, `product_type`, `size`, `weight`, `weight_unit`) VALUES
-(1, 'Besi', 'KS', '6 mm x 1,2 x 2,4 M', 140.00, 'kg'),
-(2, 'Besi', 'GDS', '6 mm x 1,2 x 2,4 M', 140.00, 'kg'),
-(3, 'Besi', 'GG', '6 mm x 1,2 x 2,4 M', 140.00, 'kg'),
-(4, 'Besi', 'IBB', '6 mm x 1,2 x 2,4 M', 140.00, 'kg'),
-(5, 'Pipa', 'Bakrie', '6 inch', 50.00, 'kg'),
-(6, 'Pipa', 'Spindo', '6 inch', 50.00, 'kg'),
-(7, 'Pipa', 'ISTW', '6 inch', 50.00, 'kg'),
-(8, 'Pipa', 'China', '6 inch', 50.00, 'kg');
-
 -- --------------------------------------------------------
 
 --
@@ -85,18 +63,6 @@ CREATE TABLE `customers` (
   `address` text NOT NULL,
   `email` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `customers`
---
-
-INSERT INTO `customers` (`customer_id`, `customer_name`, `contact`, `address`, `email`) VALUES
-(1, 'PT. Meindo Elang Indah', '08123456789', 'Jl. Raya Jakarta 123', 'meindo@elang.com'),
-(2, 'PT. Timas Suplindo', '08123456789', 'Jl. Raya Jakarta 456', 'timas@example.com'),
-(3, 'PT. Hume Sakti Indonesia', '08123456789', 'Jl. Raya Jakarta 789', 'hume@example.com'),
-(4, 'PT. Pasifik Agro Sentosa Tbk.', '08123456789', 'Jl. Raya Jakarta 901', 'pasifik@example.com'),
-(5, 'PT. Inti Ganda Perdana', '08123456789', 'Jl. Raya Jakarta 234', 'inti@example.com'),
-(6, 'PT. Bangkitgiat Usaha Mandiri', '08123456789', 'Jl. Raya Jakarta 567', 'bangkitgiat@example.com');
 
 -- --------------------------------------------------------
 
@@ -117,18 +83,6 @@ CREATE TABLE `purchasing` (
   `supplier_name` varchar(50) NOT NULL,
   `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `purchasing`
---
-
-INSERT INTO `purchasing` (`purchase_date`, `invoice_number`, `stock_id`, `brand`, `product_type`, `price`, `sub_total`, `price_total`, `supplier_id`, `supplier_name`, `quantity`) VALUES
-('2024-06-01', 1, 1, 'Besi', 'KS', 13000.00, 130000.00, 130000.00, 1, 'PT. Pelita Tatamas Jaya', 10),
-('2024-06-02', 2, 2, 'Besi', 'GDS', 12000.00, 60000.00, 60000.00, 2, 'PT. Bjamarga Kharsma Utama', 5),
-('2024-06-03', 3, 3, 'Besi', 'GG', 11000.00, 220000.00, 220000.00, 3, 'PT. Gracia Abadi', 20),
-('2024-06-04', 4, 4, 'Besi', 'IBB', 10000.00, 150000.00, 150000.00, 4, 'PT. Harapan Masa', 15),
-('2024-06-05', 5, 5, 'Pipa', 'Bakrie', 14000.00, 112000.00, 112000.00, 5, 'PT. Valconindo Inti Perkasa', 8),
-('2024-06-06', 6, 6, 'Pipa', 'Spindo', 13000.00, 156000.00, 156000.00, 6, 'PT. Sinar Bintang', 12);
 
 -- --------------------------------------------------------
 
@@ -164,18 +118,6 @@ CREATE TABLE `sales` (
   `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `sales`
---
-
-INSERT INTO `sales` (`sale_date`, `invoice_number`, `stock_id`, `brand`, `product_type`, `price`, `sub_total`, `price_total`, `customer_id`, `customer_name`, `quantity`) VALUES
-('2024-06-07', 1, 1, 'Besi', 'KS', 15000.00, 150000.00, 150000.00, 1, 'PT. Meindo Elang Indah', 10),
-('2024-06-08', 2, 2, 'Besi', 'GDS', 14000.00, 70000.00, 70000.00, 2, 'PT. Timas Suplindo', 5),
-('2024-06-09', 3, 3, 'Besi', 'GG', 13000.00, 260000.00, 260000.00, 3, 'PT. Hume Sakti Indonesia', 20),
-('2024-06-10', 4, 4, 'Besi', 'IBB', 12000.00, 180000.00, 180000.00, 4, 'PT. Pasifik Agro Sentosa Tbk.', 15),
-('2024-06-11', 5, 5, 'Pipa', 'Bakrie', 16000.00, 128000.00, 128000.00, 5, 'PT. Inti Ganda Perdana', 8),
-('2024-06-12', 6, 6, 'Pipa', 'Spindo', 15000.00, 180000.00, 180000.00, 6, 'PT. Bangkitgiat Usaha Mandiri', 12);
-
 -- --------------------------------------------------------
 
 --
@@ -189,18 +131,6 @@ CREATE TABLE `stocks` (
   `purchase_price` decimal(10,2) NOT NULL,
   `selling_price` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `stocks`
---
-
-INSERT INTO `stocks` (`stock_id`, `category_id`, `quantity`, `purchase_price`, `selling_price`) VALUES
-(1, 1, 100, 13000.00, 15000.00),
-(2, 2, 50, 12000.00, 14000.00),
-(3, 3, 200, 11000.00, 13000.00),
-(4, 4, 150, 10000.00, 12000.00),
-(5, 5, 80, 14000.00, 16000.00),
-(6, 6, 120, 13000.00, 15000.00);
 
 -- --------------------------------------------------------
 
@@ -216,18 +146,6 @@ CREATE TABLE `suppliers` (
   `email` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `suppliers`
---
-
-INSERT INTO `suppliers` (`supplier_id`, `supplier_name`, `contact`, `address`, `email`) VALUES
-(1, 'PT. Pelita Tatamas Jaya', '08123456789', 'Jl. Raya Jakarta 123', 'pelita@jaya.com'),
-(2, 'PT. Bjamarga Kharsma Utama', '08123456789', 'Jl. Raya Jakarta 456', 'bjamarga@example.com'),
-(3, 'PT. Gracia Abadi', '08123456789', 'Jl. Raya Jakarta 789', 'gracia@example.com'),
-(4, 'PT. Harapan Masa', '08123456789', 'Jl. Raya Jakarta 901', 'harapan@example.com'),
-(5, 'PT. Valconindo Inti Perkasa', '08123456789', 'Jl. Raya Jakarta 234', 'valconindo@example.com'),
-(6, 'PT. Sinar Bintang', '08123456789', 'Jl. Raya Jakarta 567', 'sinarbintang@example.com');
-
 -- --------------------------------------------------------
 
 --
@@ -242,14 +160,6 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `username`, `email`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'rudiger', 'rioclasher4@gmail.com', 'rudiger', '2024-06-28 16:04:07', '2024-06-28 16:04:07'),
-(2, 'sirah mumet', 'rrrioaisor@gmail.com', 'sirah mumet', '2024-06-28 18:08:07', '2024-06-28 18:08:07');
 
 --
 -- Indexes for dumped tables
@@ -277,7 +187,6 @@ ALTER TABLE `customers`
 -- Indexes for table `purchasing`
 --
 ALTER TABLE `purchasing`
-  ADD PRIMARY KEY (`invoice_number`),
   ADD KEY `stock_id` (`stock_id`),
   ADD KEY `supplier_id` (`supplier_id`);
 
@@ -325,37 +234,37 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `returns`
 --
 ALTER TABLE `returns`
-  MODIFY `return_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `return_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `stocks`
 --
 ALTER TABLE `stocks`
-  MODIFY `stock_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `stock_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
 --
 ALTER TABLE `suppliers`
-  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -373,26 +282,6 @@ ALTER TABLE `auth`
 ALTER TABLE `purchasing`
   ADD CONSTRAINT `purchasing_ibfk_1` FOREIGN KEY (`stock_id`) REFERENCES `stocks` (`stock_id`),
   ADD CONSTRAINT `purchasing_ibfk_2` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`supplier_id`);
-
---
--- Constraints for table `returns`
---
-ALTER TABLE `returns`
-  ADD CONSTRAINT `returns_ibfk_1` FOREIGN KEY (`invoice_number`) REFERENCES `purchasing` (`invoice_number`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `returns_ibfk_2` FOREIGN KEY (`invoice_number`) REFERENCES `sales` (`invoice_number`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `sales`
---
-ALTER TABLE `sales`
-  ADD CONSTRAINT `sales_ibfk_1` FOREIGN KEY (`stock_id`) REFERENCES `stocks` (`stock_id`),
-  ADD CONSTRAINT `sales_ibfk_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`);
-
---
--- Constraints for table `stocks`
---
-ALTER TABLE `stocks`
-  ADD CONSTRAINT `stocks_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

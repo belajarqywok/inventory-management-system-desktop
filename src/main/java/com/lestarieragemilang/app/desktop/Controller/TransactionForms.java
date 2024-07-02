@@ -1,484 +1,216 @@
 package com.lestarieragemilang.app.desktop.Controller;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.JOptionPane;
-
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.lestarieragemilang.app.desktop.Dao.Transactions.BuyDao;
-import com.lestarieragemilang.app.desktop.Dao.Transactions.SellDao;
-import com.lestarieragemilang.app.desktop.Entities.Transactions.Buy;
-import com.lestarieragemilang.app.desktop.Entities.Transactions.Sell;
-import com.lestarieragemilang.app.desktop.Utilities.GenerateRandomID;
-import com.lestarieragemilang.app.desktop.Utilities.Transactions.BuyTablePopulator;
-import com.lestarieragemilang.app.desktop.Utilities.Transactions.SellTablePopulator;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
-import javafx.event.ActionEvent;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.lestarieragemilang.app.desktop.Configurations.DatabaseConfiguration;
+import com.lestarieragemilang.app.desktop.Dao.Transactions.BuyDao;
+import com.lestarieragemilang.app.desktop.Dao.Transactions.SaleDao;
+import com.lestarieragemilang.app.desktop.Dao.Transactions.Implement.BuyDaoImpl;
+import com.lestarieragemilang.app.desktop.Dao.Transactions.Implement.SaleDaoImpl;
+import com.lestarieragemilang.app.desktop.Entities.Customer;
+import com.lestarieragemilang.app.desktop.Entities.Stock;
+import com.lestarieragemilang.app.desktop.Entities.Supplier;
+import com.lestarieragemilang.app.desktop.Entities.Transactions.Invoice;
+import com.lestarieragemilang.app.desktop.Entities.Transactions.Purchasing;
+import com.lestarieragemilang.app.desktop.Entities.Transactions.Sales;
+import com.lestarieragemilang.app.desktop.Utilities.GenerateRandomID;
 
 public class TransactionForms {
-    GenerateRandomID gen = new GenerateRandomID();
 
-    BuyTablePopulator buyTablePopulator = new BuyTablePopulator();
+    private int currentInvoiceNumber;
 
-    @FXML
-    JFXButton editBuyButtonText, editSellButtonText;
-
-    // Buy Form
-    @FXML
-    private TableColumn<?, ?> buyBrandCol, buyDateCol, buyInvoiceCol, buyOnSupplierNameCol, buyPriceCol, buySubTotalCol,
-            buyTotalCol, buyTypeCol;
-
-    @FXML
-    private TableColumn<?, ?> sellBrandCol, sellDateCol, sellInvoiceCol, sellOnCustomerNameCol, sellPriceCol,
-            sellSubTotalCol,
-            sellTotalCol, sellTypeCol;
-    @FXML
-    private TextField buyBrandField, buyInvoiceNumber, buyPriceField, buyTotalField, buyTypeField, supplierNameField,
-            transactionBuySearchField, buyTotalPrice;
-
-    @FXML
-    private TextField sellBrandField, sellInvoiceNumber, sellPriceField, sellTotalField, sellTypeField,
-            customerNameField,
-            transactionSellSearchField, sellTotalPrice;
     @FXML
     private DatePicker buyDate;
+
+    @FXML
+    private TextField buyInvoiceNumber;
+
+    @FXML
+    private ComboBox<Object> buyStockIDDropdown;
+
+    @FXML
+    private TextField buyBrandField;
+
+    @FXML
+    private TextField buyTypeField;
+
+    @FXML
+    private TextField buyPriceField;
+
+    @FXML
+    private ComboBox<Object> supplierIDDropDown;
+
+    @FXML
+    private TextField supplierNameField;
+
+    @FXML
+    private TextField buyTotalField;
+
+    @FXML
+    private TableView<Purchasing> buyTable;
+
+    @FXML
+    private TableColumn<Purchasing, LocalDate> buyDateCol;
+
+    @FXML
+    private TableColumn<Purchasing, Integer> buyInvoiceCol;
+
+    @FXML
+    private TableColumn<Purchasing, String> buyOnSupplierNameCol;
+
+    @FXML
+    private TableColumn<Purchasing, String> buyBrandCol;
+
+    @FXML
+    private TableColumn<Purchasing, String> buyTypeCol;
+
+    @FXML
+    private TableColumn<Purchasing, Integer> buyTotalCol;
+
+    @FXML
+    private TableColumn<Purchasing, BigDecimal> buyPriceCol;
+
+    @FXML
+    private TableColumn<Purchasing, BigDecimal> buySubTotalCol;
+
+    @FXML
+    private TextField buyTotalPrice;
 
     @FXML
     private DatePicker sellDate;
 
     @FXML
-    private TableView<Buy> buyTable;
+    private TextField sellInvoiceNumber;
 
     @FXML
-    private TableView<Sell> sellTable;
+    private ComboBox<Integer> sellStockIDDropdown;
 
     @FXML
-    private JFXComboBox<Object> buyStockIDDropdown, sellStockIDDropdown;
+    private TextField sellBrandField;
 
     @FXML
-    private JFXComboBox<Object> supplierIDDropDown, customerIDDropDown;
+    private TextField sellTypeField;
 
-    // Sell Form
     @FXML
-    void addSellButton(ActionEvent event) {
-        GenerateRandomID gen = new GenerateRandomID();
+    private TextField sellPriceField;
 
-        int invoiceNumber = gen.generateRandomId();
+    @FXML
+    private ComboBox<Object> customerIDDropDown;
 
-        Sell newSell = new Sell(
-            LocalDate.now(), sellBrandField.getText(), sellTypeField.getText(),
-            customerNameField.getText(),
-            invoiceNumber, Integer.parseInt(buyStockIDDropdown.getValue().toString()),
-            Integer.parseInt(supplierIDDropDown.getValue().toString()), 
-            Integer.parseInt(sellTotalField.getText()),
-            Double.parseDouble(sellPriceField.getText()),
-            Double.parseDouble(sellTotalField.getText()),
-            Double.parseDouble(sellTotalField.getText())
-        );
+    @FXML
+    private TextField customerNameField;
 
-        SellDao sellDao = new SellDao();
-        sellDao.addSell(newSell);
+    @FXML
+    private TextField sellTotalField;
 
-        sellTable.getItems().add(newSell);
+    @FXML
+    private TableView<Sales> sellTable;
 
-        sellBrandField.clear();
-        sellTypeField.clear();
-        sellPriceField.clear();
-        sellTotalField.clear();
-        sellInvoiceNumber.clear();
-        customerNameField.clear();
-        sellDate.setValue(null);
+    @FXML
+    private TableColumn<Sales, LocalDate> sellDateCol;
+
+    @FXML
+    private TableColumn<Sales, Integer> sellInvoiceCol;
+
+    @FXML
+    private TableColumn<Sales, String> sellOnCustomerNameCol;
+
+    @FXML
+    private TableColumn<Sales, String> sellBrandCol;
+
+    @FXML
+    private TableColumn<Sales, String> sellTypeCol;
+
+    @FXML
+    private TableColumn<Sales, Integer> sellTotalCol;
+
+    @FXML
+    private TableColumn<Sales, BigDecimal> sellPriceCol;
+
+    @FXML
+    private TableColumn<Sales, BigDecimal> sellSubTotalCol;
+
+    @FXML
+    private TextField sellTotalPrice;
+
+    @FXML
+    private TabPane tabPane;
+
+    private BuyDaoImpl buyDao = new BuyDaoImpl();
+    private SaleDaoImpl saleDao = new SaleDaoImpl();
+
+    private ObservableList<Purchasing> buyData = FXCollections.observableArrayList();
+    private ObservableList<Sales> sellData = FXCollections.observableArrayList();
+
+    public void setBuyDao(BuyDaoImpl buyDao) {
+        this.buyDao = buyDao;
     }
 
-    
-    @FXML
-    void editSellButton(ActionEvent event) {
-        Sell selectedSell = sellTable.getSelectionModel().getSelectedItem();
-
-        if (selectedSell != null) {
-            if (editSellButtonText.getText().equals("KONFIRMASI")) {
-                // Confirmation alert
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation");
-                alert.setHeaderText(null);
-                alert.setContentText("Do you want to update the sell?");
-                
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.isPresent() && result.get() == ButtonType.OK) {
-                    updateSelectedSell(selectedSell);
-                    
-                    SellDao sellDao = new SellDao();
-                    sellDao.updateSell(selectedSell);
-
-                    sellTable.refresh();
-                    editSellButtonText.setText("EDIT");
-
-                    // Success alert
-                    showAlert(Alert.AlertType.INFORMATION, "Success", "Sell has been successfully updated.");
-                }
-            } else {
-                populateSellFields(selectedSell);
-                editSellButtonText.setText("KONFIRMASI");
-            }
-        } else {
-            showAlert(Alert.AlertType.INFORMATION, "Information", "Please select a sell to edit.");
-        }
-    }
-
-    private void updateSelectedSell(Sell selectedSell) {
-        selectedSell.setBrand(sellBrandField.getText());
-        selectedSell.setProductType(sellTypeField.getText());
-        selectedSell.setCustomerName(customerNameField.getText());
-        selectedSell.setInvoiceNumber(Integer.parseInt(sellInvoiceNumber.getText()));
-        selectedSell.setStockId(Integer.parseInt(buyStockIDDropdown.getValue().toString()));
-        selectedSell.setQuantity(Integer.parseInt(sellTotalField.getText()));
-        selectedSell.setPrice(Double.parseDouble(sellPriceField.getText()));
-        selectedSell.setSellDate(sellDate.getValue());
-    }
-
-    private void populateSellFields(Sell selectedSell) {
-        sellBrandField.setText(selectedSell.getBrand());
-        sellTypeField.setText(selectedSell.getProductType());
-        sellPriceField.setText(String.valueOf(selectedSell.getPrice()));
-        sellTotalField.setText(String.valueOf(selectedSell.getQuantity()));
-        sellInvoiceNumber.setText(String.valueOf(selectedSell.getInvoiceNumber()));
-        customerNameField.setText(selectedSell.getCustomerName());
-        sellDate.setValue(selectedSell.getSellDate());
-    }
-
-    private void showAlert(Alert.AlertType alertType, String title, String content) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-
-    @FXML
-    void removeSellButton(ActionEvent event) {
-        Sell selectedSell = sellTable.getSelectionModel().getSelectedItem();
-        if (selectedSell != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                    "Are you sure you want to delete the following sell: \n" + selectedSell.toString() + "?",
-                    ButtonType.YES,
-                    ButtonType.NO);
-            alert.setTitle("Delete Sell");
-            alert.setHeaderText(null);
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.YES) {
-                SellDao sellDao = new SellDao();
-                sellDao.removeSell(selectedSell);
-
-                List<Sell> sells = sellTable.getItems();
-                sells.remove(selectedSell);
-                sellTable.setItems(FXCollections.observableArrayList(sells));
-
-                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION,
-                        "Sell with Invoice Number: " + selectedSell.getInvoiceNumber() + " deleted.");
-                infoAlert.setTitle("Sell Deleted");
-                infoAlert.setHeaderText(null);
-                infoAlert.showAndWait();
-            } else {
-                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION, "Deletion cancelled.");
-                infoAlert.setTitle("Deletion Cancelled");
-                infoAlert.setHeaderText(null);
-                infoAlert.showAndWait();
-            }
-        }
+    public void setSaleDao(SaleDaoImpl saleDao) {
+        this.saleDao = saleDao;
     }
 
     @FXML
-    void resetSellButton(ActionEvent event) {
-        sellBrandField.clear();
-        sellTypeField.clear();
-        sellPriceField.clear();
-        sellTotalField.clear();
-        sellInvoiceNumber.clear();
-        customerNameField.clear();
-        sellDate.setValue(null);
+    private void initialize() {
+
+        GenerateRandomID generateRandomID = new GenerateRandomID();
+
+        buyInvoiceNumber.setText(String.valueOf(generateRandomID));
+        sellInvoiceNumber.setText(String.valueOf(generateRandomID));
+
+        buyDateCol.setCellValueFactory(new PropertyValueFactory<>("invoiceDate"));
+        buyInvoiceCol.setCellValueFactory(new PropertyValueFactory<>("invoiceNumber"));
+        buyOnSupplierNameCol.setCellValueFactory(new PropertyValueFactory<>("supplierName"));
+        buyBrandCol.setCellValueFactory(new PropertyValueFactory<>("brand"));
+        buyTypeCol.setCellValueFactory(new PropertyValueFactory<>("productType"));
+        buyTotalCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        buyPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        buySubTotalCol.setCellValueFactory(new PropertyValueFactory<>("subTotal"));
+
+        sellDateCol.setCellValueFactory(new PropertyValueFactory<>("invoice.invoiceDate"));
+        sellInvoiceCol.setCellValueFactory(new PropertyValueFactory<>("invoice.invoiceNumber"));
+        sellOnCustomerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        sellBrandCol.setCellValueFactory(new PropertyValueFactory<>("brand"));
+        sellTypeCol.setCellValueFactory(new PropertyValueFactory<>("productType"));
+        sellTotalCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        sellPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        sellSubTotalCol.setCellValueFactory(new PropertyValueFactory<>("subTotal"));
+
+        buyTable.setItems(buyData);
+        sellTable.setItems(sellData);
+
+        loadBuyData();
+        loadSellData();
+
+        loadStockIDs();
+        loadSupplierIDs();
+        // loadCustomerIDs();
     }
 
-    @FXML
-    void confirmSellButton() {
-        Sell selectedSell = sellTable.getSelectionModel().getSelectedItem();
-        if (selectedSell != null) {
-            SellDao sellDao = new SellDao();
-            sellDao.updateSell(selectedSell);
-        } else {
-            JOptionPane.showMessageDialog(null, "Please select a row to confirm");
-        }
+    private void loadBuyData() {
+        buyData.clear();
+        buyData.addAll(buyDao.getAllPurchasing());
     }
 
-    void searchSellData() {
-        SellDao sellDao = new SellDao();
-        List<Sell> sellList = sellDao.getAll();
-        ObservableList<Sell> sellObservableList = FXCollections.observableArrayList(sellList);
-        FilteredList<Sell> filteredData = new FilteredList<>(sellObservableList, p -> true);
-        transactionSellSearchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(sell -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                String lowerCaseFilter = newValue.toLowerCase();
-
-                if (sell.getBrand().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (sell.getProductType().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (sell.getCustomerName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(sell.getInvoiceNumber()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(sell.getStockId()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(sell.getQuantity()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(sell.getPrice()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(sell.getSubTotal()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(sell.getPriceTotal()).contains(lowerCaseFilter)) {
-                    return true;
-                }
-                return false;
-            });
-        });
+    private void loadSellData() {
+        sellData.clear();
+        sellData.addAll(saleDao.getAllSales());
     }
 
-
-
-
-
-    /**
-     * 
-     *     |-------------------------------------------|
-     *     |--------------- | Buy Form | --------------|
-     *     |-------------------------------------------|
-     * 
-     */
-
-    @FXML
-    void addBuyButton(ActionEvent event) {
-        GenerateRandomID gen = new GenerateRandomID();
-
-        int invoiceNumber = gen.generateRandomId();
-
-        Buy newBuy = new Buy(LocalDate.now(), buyBrandField.getText(), buyTypeField.getText(),
-            supplierNameField.getText(),
-            invoiceNumber, Integer.parseInt(buyStockIDDropdown.getValue().toString()),
-            Integer.parseInt(supplierIDDropDown.getValue().toString()), 
-            Integer.parseInt(buyTotalField.getText()),
-            Double.parseDouble(buyPriceField.getText()),
-            Double.parseDouble(buyTotalField.getText()),
-            Double.parseDouble(buyTotalField.getText())
-        );
-
-        BuyDao buyDao = new BuyDao();
-        buyDao.addBuy(newBuy);
-
-        buyTable.getItems().add(newBuy);
-
-        buyTotalPrice.setText(Long.toString(buyDao.sumTotal()));
-
-        buyBrandField.clear();
-        buyTypeField.clear();
-        buyPriceField.clear();
-        buyTotalField.clear();
-        buyInvoiceNumber.clear();
-        supplierNameField.clear();
-        buyDate.setValue(null);
-    }
-
-    @FXML
-    void editBuyButton(ActionEvent event) {
-        Buy selectedBuy = buyTable.getSelectionModel().getSelectedItem();
-
-        if (selectedBuy != null) {
-            if (editBuyButtonText.getText().equals("KONFIRMASI")) {
-                // Confirmation alert
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation");
-                alert.setHeaderText(null);
-                alert.setContentText("Do you want to update the buy?");
-
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.isPresent() && result.get() == ButtonType.OK) {
-                    try {
-                        updateSelectedBuy(selectedBuy);
-
-                        BuyDao buyDao = new BuyDao();
-                        buyDao.updateBuy(selectedBuy);
-
-                        buyTable.refresh();
-                        editBuyButtonText.setText("EDIT");
-
-                        // Success alert
-                        showAlert(Alert.AlertType.INFORMATION, "Success", "Buy has been successfully updated.");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        showAlert(Alert.AlertType.ERROR, "Error", "Failed to update the buy.");
-                    }
-                }
-            } else {
-                populateBuyFields(selectedBuy);
-                editBuyButtonText.setText("KONFIRMASI");
-            }
-        } else {
-            showAlert(Alert.AlertType.INFORMATION, "Information", "Please select a buy to edit.");
-        }
-    }
-
-    private void updateSelectedBuy(Buy selectedBuy) {
-        selectedBuy.setBrand(buyBrandField.getText());
-        selectedBuy.setProductType(buyTypeField.getText());
-        selectedBuy.setSupplierName(supplierNameField.getText());
-        selectedBuy.setInvoiceNumber(Integer.parseInt(buyInvoiceNumber.getText()));
-        selectedBuy.setStockId(Integer.parseInt(buyStockIDDropdown.getValue().toString()));
-        selectedBuy.setQuantity(Integer.parseInt(buyTotalField.getText()));
-        selectedBuy.setPrice(Double.parseDouble(buyPriceField.getText()));
-        selectedBuy.setPurchaseDate(buyDate.getValue());
-    }
-
-    private void populateBuyFields(Buy selectedBuy) {
-        buyBrandField.setText(selectedBuy.getBrand());
-        buyTypeField.setText(selectedBuy.getProductType());
-        buyPriceField.setText(String.valueOf(selectedBuy.getPrice()));
-        buyTotalField.setText(String.valueOf(selectedBuy.getQuantity()));
-        buyInvoiceNumber.setText(String.valueOf(selectedBuy.getInvoiceNumber()));
-        supplierNameField.setText(selectedBuy.getSupplierName());
-        buyDate.setValue(selectedBuy.getPurchaseDate());
-    }
-
-    @FXML
-    void removeBuyButton(ActionEvent event) {
-        Buy selectedBuy = buyTable.getSelectionModel().getSelectedItem();
-        if (selectedBuy != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                    "Are you sure you want to delete the following buy: \n" + selectedBuy.toString() + "?",
-                    ButtonType.YES,
-                    ButtonType.NO);
-            alert.setTitle("Delete Buy");
-            alert.setHeaderText(null);
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.YES) {
-                BuyDao buyDao = new BuyDao();
-                buyDao.removeBuy(selectedBuy);
-
-                List<Buy> buys = buyTable.getItems();
-                buys.remove(selectedBuy);
-                buyTable.setItems(FXCollections.observableArrayList(buys));
-
-                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION,
-                        "Buy with Invoice Number: " + selectedBuy.getInvoiceNumber() + " deleted.");
-                infoAlert.setTitle("Buy Deleted");
-                infoAlert.setHeaderText(null);
-                infoAlert.showAndWait();
-            } else {
-                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION, "Deletion cancelled.");
-                infoAlert.setTitle("Deletion Cancelled");
-                infoAlert.setHeaderText(null);
-                infoAlert.showAndWait();
-            }
-        }
-    }
-
-    @FXML
-    void resetBuyButton(ActionEvent event) {
-        buyBrandField.clear();
-        buyTypeField.clear();
-        buyPriceField.clear();
-        buyTotalField.clear();
-        buyInvoiceNumber.clear();
-        supplierNameField.clear();
-        buyDate.setValue(null);
-    }
-
-    @FXML
-    void confirmBuyButton() {
-        Buy selectedBuy = buyTable.getSelectionModel().getSelectedItem();
-        if (selectedBuy != null) {
-            BuyDao buyDao = new BuyDao();
-            buyDao.updateBuy(selectedBuy);
-        } else {
-            JOptionPane.showMessageDialog(null, "Please select a row to confirm");
-        }
-    }
-
-    void searchBuyData() {
-        BuyDao buyDao = new BuyDao();
-        List<Buy> buyList = buyDao.getAll();
-        ObservableList<Buy> buyObservableList = FXCollections.observableArrayList(buyList);
-        FilteredList<Buy> filteredData = new FilteredList<>(buyObservableList, p -> true);
-        transactionBuySearchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(buy -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                String lowerCaseFilter = newValue.toLowerCase();
-
-                if (buy.getBrand().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (buy.getProductType().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (buy.getSupplierName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(buy.getInvoiceNumber()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(buy.getStockId()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(buy.getSupplierId()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(buy.getQuantity()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(buy.getPrice()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(buy.getSubTotal()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(buy.getPriceTotal()).contains(lowerCaseFilter)) {
-                    return true;
-                }
-                return false;
-            });
-        });
-
-    }
-
-    void buyInit() {
-        BuyTablePopulator buyTablePopulator = new BuyTablePopulator();
-
-        // Buy Table
-        buyTablePopulator.populateBuyTable(
-            buyDateCol, buyBrandCol, buyTypeCol, buyOnSupplierNameCol,
-            buyInvoiceCol, buySubTotalCol, buyPriceCol, buyTotalCol, buyTable
-        );
-
-        BuyDao buyDao = new BuyDao();
-
-        // Stock ID Dropdown
+    private void loadStockIDs() {
         ObservableList<Object> stockIds = FXCollections.observableArrayList(buyDao.getAllStockIds());
         buyStockIDDropdown.setItems(stockIds);
         if (!stockIds.isEmpty()) {
@@ -499,7 +231,9 @@ public class TransactionForms {
                 buyPriceField.setText(stockDetails.get(2)); // Assuming the price is the third item in the list
             }
         });
+    }
 
+    private void loadSupplierIDs() {
         ObservableList<Object> supplierIds = FXCollections.observableArrayList(buyDao.getSupplierIds());
         supplierIDDropDown.setItems(supplierIds);
         if (!supplierIds.isEmpty()) {
@@ -518,122 +252,264 @@ public class TransactionForms {
         });
     }
 
-    void sellInit() {
-        // Sell Table
-        SellTablePopulator sellTablePopulator = new SellTablePopulator();
-        sellTablePopulator.populateSellTable(sellDateCol, sellBrandCol, sellTypeCol, sellOnCustomerNameCol,
-                sellInvoiceCol,
-                sellSubTotalCol, sellPriceCol, sellTotalCol, sellTable);
+    // private void loadCustomerIDs() {
+    // ObservableList<Object> customerIds =
+    // FXCollections.observableArrayList(sellDao.getCustomerIds());
+    // customerIDDropDown.setItems(customerIds);
+    // if (!customerIds.isEmpty()) {
+    // customerIDDropDown.getSelectionModel().selectFirst();
+    // String firstCustomerId = customerIds.get(0).toString();
+    // String firstCustomerName = sellDao.getCustomerName(firstCustomerId);
+    // customerNameField.setText(firstCustomerName);
+    // }
 
-        SellDao sellDao = new SellDao();
+    // customerIDDropDown.getSelectionModel().selectedItemProperty().addListener((observable,
+    // oldValue, newValue) -> {
+    // if (newValue != null) {
+    // String customerId = newValue.toString();
+    // String customerName = sellDao.getCustomerName(customerId);
+    // customerNameField.setText(customerName);
+    // }
+    // });
+    // }
 
-        // Stock ID Dropdown
-        ObservableList<Object> stockIds = FXCollections.observableArrayList(sellDao.getAllStockIds());
-        sellStockIDDropdown.setItems(stockIds);
-        if (!stockIds.isEmpty()) {
-            sellStockIDDropdown.getSelectionModel().selectFirst();
-            String firstStockId = stockIds.get(0).toString();
-            List<String> firstStockDetails = sellDao.getBrandTypePrice(firstStockId);
-            sellBrandField.setText(firstStockDetails.get(0)); // Assuming the brand is the first item in the list
-            sellTypeField.setText(firstStockDetails.get(1)); // Assuming the type is the second item in the list
-            sellPriceField.setText(firstStockDetails.get(2)); // Assuming the price is the third item in the list
-        }
+    @FXML
+    private void addBuyButton() {
+        if (tabPane.getSelectionModel().getSelectedIndex() == 0) {
+            Purchasing purchasing = new Purchasing();
 
-        sellStockIDDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                String stockId = newValue.toString();
-                List<String> stockDetails = sellDao.getBrandTypePrice(stockId);
-                sellBrandField.setText(stockDetails.get(0)); // Assuming the brand is the first item in the list
-                sellTypeField.setText(stockDetails.get(1)); // Assuming the type is the second item in the list
-                sellPriceField.setText(stockDetails.get(2)); // Assuming the price is the third item in the list
+            // Initialize the Invoice object if it's null
+            if (purchasing.getInvoice() == null) {
+                purchasing.setInvoice(new Invoice());
             }
-        });
 
-        // Customer ID Dropdown
-        ObservableList<Object> customerIds = FXCollections.observableArrayList(sellDao.getCustomerIds());
-        customerIDDropDown.setItems(customerIds);
-        if (!customerIds.isEmpty()) {
-            customerIDDropDown.getSelectionModel().selectFirst();
-            String firstCustomerId = customerIds.get(0).toString();
-            String firstCustomerName = sellDao.getCustomerName(firstCustomerId);
-            customerNameField.setText(firstCustomerName);
+            purchasing.getInvoice().setInvoiceNumber(currentInvoiceNumber);
+            purchasing.getInvoice().setInvoiceDate(buyDate.getValue());
+            purchasing.setStockId((int) buyStockIDDropdown.getValue());
+            purchasing.setBrand(buyBrandField.getText());
+            purchasing.setProductType(buyTypeField.getText());
+            purchasing.setPrice(new BigDecimal(buyPriceField.getText()));
+            purchasing.setSupplierId((int) supplierIDDropDown.getValue());
+            purchasing.setSupplierName(supplierNameField.getText());
+            purchasing.setQuantity(Integer.parseInt(buyTotalField.getText()));
+            purchasing.setSubTotal(purchasing.getPrice().multiply(BigDecimal.valueOf(purchasing.getQuantity())));
+            purchasing.setPriceTotal(purchasing.getSubTotal());
+
+            buyTable.getItems().add(purchasing);
+            calculateTotalPrice();
+        } else {
+            // Add sales data to temporary UI table
+            Sales sales = new Sales();
+            sales.setInvoice(new Invoice());
+            sales.getInvoice().setInvoiceDate(sellDate.getValue());
+            sales.setStockId((int) sellStockIDDropdown.getValue());
+            sales.setBrand(sellBrandField.getText());
+            sales.setProductType(sellTypeField.getText());
+            sales.setPrice(new BigDecimal(sellPriceField.getText()));
+            sales.setCustomerId((int) customerIDDropDown.getValue());
+            sales.setCustomerName(customerNameField.getText());
+            sales.setQuantity(Integer.parseInt(sellTotalField.getText()));
+            sales.setSubTotal(sales.getPrice().multiply(BigDecimal.valueOf(sales.getQuantity())));
+            sales.setPriceTotal(sales.getSubTotal());
+            sellTable.getItems().add(sales);
         }
+        calculateTotalPrice();
+    }
 
-        customerIDDropDown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                String customerId = newValue.toString();
-                String customerName = sellDao.getCustomerName(customerId);
-                customerNameField.setText(customerName);
+    @FXML
+    private void editBuyButton() {
+        Purchasing purchasing = buyTable.getSelectionModel().getSelectedItem();
+        if (purchasing != null) {
+            purchasing.getInvoice().setInvoiceDate((buyDate.getValue()));
+            purchasing.setStockId((int) buyStockIDDropdown.getValue());
+            purchasing.setBrand(buyBrandField.getText());
+            purchasing.setProductType(buyTypeField.getText());
+            purchasing.setPrice(new BigDecimal(buyPriceField.getText()));
+            purchasing.setSupplierId((int) supplierIDDropDown.getValue());
+            purchasing.setSupplierName(supplierNameField.getText());
+            purchasing.setQuantity(Integer.parseInt(buyTotalField.getText()));
+            purchasing.setSubTotal(purchasing.getPrice().multiply(BigDecimal.valueOf(purchasing.getQuantity())));
+            purchasing.setPriceTotal(purchasing.getSubTotal());
+
+            buyDao.updatePurchasing(purchasing);
+            loadBuyData();
+        }
+    }
+
+    @FXML
+    private void removeBuyButton() {
+        Purchasing purchasing = buyTable.getSelectionModel().getSelectedItem();
+        if (purchasing != null) {
+            buyDao.deletePurchasing(purchasing.getInvoice().getInvoiceNumber());
+            loadBuyData();
+        }
+    }
+
+    @FXML
+    private void addSellButton() {
+        Sales sales = new Sales();
+        sales.setInvoice(new Invoice());
+        sales.getInvoice().setInvoiceDate((sellDate.getValue()));
+        sales.setStockId(sellStockIDDropdown.getValue());
+        sales.setBrand(sellBrandField.getText());
+        sales.setProductType(sellTypeField.getText());
+        sales.setPrice(new BigDecimal(sellPriceField.getText()));
+        sales.setCustomerId((int) customerIDDropDown.getValue());
+        sales.setCustomerName(customerNameField.getText());
+        sales.setQuantity(Integer.parseInt(sellTotalField.getText()));
+        sales.setSubTotal(sales.getPrice().multiply(BigDecimal.valueOf(sales.getQuantity())));
+        sales.setPriceTotal(sales.getSubTotal());
+
+        saleDao.addSales(sales);
+        loadSellData();
+    }
+
+    @FXML
+    private void editSellButton() {
+        Sales sales = sellTable.getSelectionModel().getSelectedItem();
+        if (sales != null) {
+            sales.getInvoice().setInvoiceDate((sellDate.getValue()));
+            sales.setStockId(sellStockIDDropdown.getValue());
+            sales.setBrand(sellBrandField.getText());
+            sales.setProductType(sellTypeField.getText());
+            sales.setPrice(new BigDecimal(sellPriceField.getText()));
+            sales.setCustomerId((int) customerIDDropDown.getValue());
+            sales.setCustomerName(customerNameField.getText());
+            sales.setQuantity(Integer.parseInt(sellTotalField.getText()));
+            sales.setSubTotal(sales.getPrice().multiply(BigDecimal.valueOf(sales.getQuantity())));
+            sales.setPriceTotal(sales.getSubTotal());
+
+            saleDao.updateSales(sales);
+            loadSellData();
+        }
+    }
+
+    @FXML
+    private void removeSellButton() {
+        Sales sales = sellTable.getSelectionModel().getSelectedItem();
+        if (sales != null) {
+            saleDao.deleteSales(sales.getInvoice().getInvoiceNumber());
+            loadSellData();
+        }
+    }
+
+    @FXML
+    private void confirmBuyButton() {
+        if (tabPane.getSelectionModel().getSelectedIndex() == 0) {
+            List<Purchasing> purchasingList = new ArrayList<>(buyTable.getItems());
+            confirmPurchasing(purchasingList);
+            buyTable.getItems().clear();
+            currentInvoiceNumber = generateInvoiceNumber();
+            buyInvoiceNumber.setText(String.valueOf(currentInvoiceNumber));
+        } else {
+            List<Sales> salesList = new ArrayList<>(sellTable.getItems());
+            // confirmSales(salesList);
+            sellTable.getItems().clear();
+            currentInvoiceNumber = generateInvoiceNumber();
+            sellInvoiceNumber.setText(String.valueOf(currentInvoiceNumber));
+        }
+        calculateTotalPrice();
+    }
+
+    private void calculateTotalPrice() {
+        BigDecimal total = BigDecimal.ZERO;
+        if (tabPane.getSelectionModel().getSelectedIndex() == 0) {
+            // Calculate total price for purchasing data
+            for (Purchasing purchasing : buyTable.getItems()) {
+                total = total.add(purchasing.getSubTotal());
             }
-        });
-
-        searchSellData();
-    }
-
-    @FXML
-    void calculateBuyTotalPrice(ActionEvent event) {
-        double price = Double.parseDouble(buyPriceField.getText());
-        double total = price * 1;
-        buyTotalPrice.setText(String.valueOf(total));
-    }
-
-    @FXML
-    void calculateSellTotalPrice(ActionEvent event) {
-        double price = Double.parseDouble(sellPriceField.getText());
-        double total = price * 1;
-        sellTotalPrice.setText(String.valueOf(total));
-    }
-
-    @FXML
-    void searchDataBuyAction(ActionEvent event) {
-        BuyDao buyDao = new BuyDao();
-        ObservableList<Buy> data = FXCollections.observableArrayList();
-
-        data = FXCollections.observableArrayList();
-
-        List<Buy> searchDatas = buyDao
-            .searchBuyData(transactionBuySearchField.getText());
-
-        for (Buy rowData : searchDatas) {
-            data.add(rowData);
-            buyTable.setItems(data);
+        } else {
+            // Calculate total price for sales data
+            for (Sales sales : sellTable.getItems()) {
+                total = total.add(sales.getSubTotal());
+            }
         }
-        
-        buyTable.refresh();
+        buyTotalPrice.setText(total.toString());
+    }
+
+    private void confirmPurchasing(List<Purchasing> purchasingList) {
+        for (Purchasing purchasing : purchasingList) {
+            buyDao.addPurchasing(purchasing);
+        }
+    }
+
+    private void confirmSales(List<Sales> salesList) {
+        for (Sales sale : salesList) {
+            saleDao.addSales(sale);
+        }
+    }
+
+    private int generateInvoiceNumber() {
+        String sql = "SELECT MAX(invoice_number) FROM purchasing";
+
+        try (Connection conn = DatabaseConfiguration.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1) + 1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 1;
     }
 
     @FXML
-    void searchDataSellAction(ActionEvent event) {
-        SellDao sellDao = new SellDao();
-        ObservableList<Sell> data = FXCollections.observableArrayList();
-
-        data = FXCollections.observableArrayList();
-
-        List<Sell> searchDatas = sellDao
-            .searchSellData(transactionSellSearchField.getText());
-
-        for (Sell rowData : searchDatas) {
-            data.add(rowData);
-            sellTable.setItems(data);
-        }
-        
-        sellTable.refresh();
+    private void confirmSellButton() {
+        List<Sales> salesList = new ArrayList<>(sellData);
+        saleDao.confirmSales(salesList);
+        sellData.clear();
+        loadSellData();
     }
 
     @FXML
-    public void initialize() {
-        try {
-            BuyDao buyDao = new BuyDao();
-            SellDao sellDao = new SellDao();
+    private void calculateBuyTotalPrice() {
+        BigDecimal total = BigDecimal.ZERO;
 
-            buyTotalPrice.setText(Long.toString(buyDao.sumTotal()));
-            sellTotalPrice.setText(Long.toString(sellDao.sumTotal()));
-            
-            buyInit();
-            sellInit();
-            searchBuyData();
-        } catch (Exception e) {
-            Logger.getLogger(TransactionForms.class.getName()).log(Level.SEVERE, null, e);
+        for (Purchasing purchasing : buyData) {
+            total = total.add(purchasing.getSubTotal());
         }
+
+        buyTotalPrice.setText(total.toString());
+    }
+
+    // calculateSellTotalPrice
+
+    @FXML
+    private void calculateSellTotalPrice() {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Purchasing purchasing : buyData) {
+            total = total.add(purchasing.getSubTotal());
+        }
+
+        buyTotalPrice.setText(total.toString());
+    }
+
+    @FXML
+    private void searchDataBuyAction() {
+        // Purchasing purchasing = buyDao.searchDataBuy(buyStockIDDropdown.getValue());
+        // buyBrandField.setText(purchasing.getBrand());
+        // buyTypeField.setText(purchasing.getProductType());
+        // buyPriceField.setText(purchasing.getPrice().toString());
+    }
+
+    @FXML
+    private void searchDataSellAction() {
+        // Purchasing purchasing = buyDao.searchDataBuy(buyStockIDDropdown.getValue());
+        // buyBrandField.setText(purchasing.getBrand());
+        // buyTypeField.setText(purchasing.getProductType());
+        // buyPriceField.setText(purchasing.getPrice().toString());
+    }
+
+    @FXML
+    private void resetBuyButton() {
+
+    }
+
+    @FXML
+    private void resetSellButton() {
+
     }
 }

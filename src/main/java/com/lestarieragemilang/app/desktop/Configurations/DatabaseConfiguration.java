@@ -21,7 +21,7 @@ public class DatabaseConfiguration {
     static {
         try {
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl("jdbc:mysql://localhost:3306/steel_shop");
+            config.setJdbcUrl("jdbc:mysql://localhost:3306/lestarieragemilang");
             config.setUsername("root");
             config.setPassword("");
             config.setDriverClassName("com.mysql.cj.jdbc.Driver");
