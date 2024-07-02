@@ -11,4 +11,5 @@ public interface SaleDao {
     Sales getSalesById(int id);
     List<Sales> getAllSales();
     void confirmSales(List<Sales> salesList);
+    
 }

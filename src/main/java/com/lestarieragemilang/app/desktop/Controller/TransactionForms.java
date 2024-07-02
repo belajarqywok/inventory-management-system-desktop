@@ -2,6 +2,7 @@ package com.lestarieragemilang.app.desktop.Controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -14,15 +15,11 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.lestarieragemilang.app.desktop.Configurations.DatabaseConfiguration;
-import com.lestarieragemilang.app.desktop.Dao.Transactions.BuyDao;
-import com.lestarieragemilang.app.desktop.Dao.Transactions.SaleDao;
 import com.lestarieragemilang.app.desktop.Dao.Transactions.Implement.BuyDaoImpl;
 import com.lestarieragemilang.app.desktop.Dao.Transactions.Implement.SaleDaoImpl;
-import com.lestarieragemilang.app.desktop.Entities.Customer;
-import com.lestarieragemilang.app.desktop.Entities.Stock;
-import com.lestarieragemilang.app.desktop.Entities.Supplier;
 import com.lestarieragemilang.app.desktop.Entities.Transactions.Invoice;
 import com.lestarieragemilang.app.desktop.Entities.Transactions.Purchasing;
 import com.lestarieragemilang.app.desktop.Entities.Transactions.Sales;
@@ -31,120 +28,40 @@ import com.lestarieragemilang.app.desktop.Utilities.GenerateRandomID;
 public class TransactionForms {
 
     private int currentInvoiceNumber;
-
     @FXML
-    private DatePicker buyDate;
-
+    private DatePicker buyDate, sellDate;
     @FXML
-    private TextField buyInvoiceNumber;
-
+    private TextField buyInvoiceNumber, buyBrandField, buyTypeField, buyPriceField, supplierNameField, buyTotalField,
+            buyTotalPrice, sellInvoiceNumber, sellBrandField, sellTypeField, sellPriceField, customerNameField,
+            sellTotalField, sellTotalPrice;
     @FXML
-    private ComboBox<Object> buyStockIDDropdown;
-
+    private ComboBox<Object> buyStockIDDropdown, supplierIDDropDown;
     @FXML
-    private TextField buyBrandField;
-
-    @FXML
-    private TextField buyTypeField;
-
-    @FXML
-    private TextField buyPriceField;
-
-    @FXML
-    private ComboBox<Object> supplierIDDropDown;
-
-    @FXML
-    private TextField supplierNameField;
-
-    @FXML
-    private TextField buyTotalField;
-
+    private ComboBox<Integer> sellStockIDDropdown, customerIDDropDown;
     @FXML
     private TableView<Purchasing> buyTable;
-
-    @FXML
-    private TableColumn<Purchasing, LocalDate> buyDateCol;
-
-    @FXML
-    private TableColumn<Purchasing, Integer> buyInvoiceCol;
-
-    @FXML
-    private TableColumn<Purchasing, String> buyOnSupplierNameCol;
-
-    @FXML
-    private TableColumn<Purchasing, String> buyBrandCol;
-
-    @FXML
-    private TableColumn<Purchasing, String> buyTypeCol;
-
-    @FXML
-    private TableColumn<Purchasing, Integer> buyTotalCol;
-
-    @FXML
-    private TableColumn<Purchasing, BigDecimal> buyPriceCol;
-
-    @FXML
-    private TableColumn<Purchasing, BigDecimal> buySubTotalCol;
-
-    @FXML
-    private TextField buyTotalPrice;
-
-    @FXML
-    private DatePicker sellDate;
-
-    @FXML
-    private TextField sellInvoiceNumber;
-
-    @FXML
-    private ComboBox<Integer> sellStockIDDropdown;
-
-    @FXML
-    private TextField sellBrandField;
-
-    @FXML
-    private TextField sellTypeField;
-
-    @FXML
-    private TextField sellPriceField;
-
-    @FXML
-    private ComboBox<Integer> customerIDDropDown;
-
-    @FXML
-    private TextField customerNameField;
-
-    @FXML
-    private TextField sellTotalField;
-
     @FXML
     private TableView<Sales> sellTable;
-
+    @FXML
+    private TableColumn<Purchasing, LocalDate> buyDateCol;
+    @FXML
+    private TableColumn<Purchasing, Integer> buyInvoiceCol;
+    @FXML
+    private TableColumn<Purchasing, String> buyOnSupplierNameCol, buyBrandCol, buyTypeCol;
+    @FXML
+    private TableColumn<Purchasing, Integer> buyTotalCol;
+    @FXML
+    private TableColumn<Purchasing, BigDecimal> buyPriceCol, buySubTotalCol;
     @FXML
     private TableColumn<Sales, LocalDate> sellDateCol;
-
     @FXML
     private TableColumn<Sales, Integer> sellInvoiceCol;
-
     @FXML
-    private TableColumn<Sales, String> sellOnCustomerNameCol;
-
-    @FXML
-    private TableColumn<Sales, String> sellBrandCol;
-
-    @FXML
-    private TableColumn<Sales, String> sellTypeCol;
-
+    private TableColumn<Sales, String> sellOnCustomerNameCol, sellBrandCol, sellTypeCol;
     @FXML
     private TableColumn<Sales, Integer> sellTotalCol;
-
     @FXML
-    private TableColumn<Sales, BigDecimal> sellPriceCol;
-
-    @FXML
-    private TableColumn<Sales, BigDecimal> sellSubTotalCol;
-
-    @FXML
-    private TextField sellTotalPrice;
+    private TableColumn<Sales, BigDecimal> sellPriceCol, sellSubTotalCol;
 
     @FXML
     private TabPane tabPane;
@@ -171,15 +88,6 @@ public class TransactionForms {
         buyInvoiceNumber.setText(String.valueOf(generateRandomID));
         sellInvoiceNumber.setText(String.valueOf(generateRandomID));
 
-        buyDateCol.setCellValueFactory(new PropertyValueFactory<>("invoiceDate"));
-        buyInvoiceCol.setCellValueFactory(new PropertyValueFactory<>("invoiceNumber"));
-        buyOnSupplierNameCol.setCellValueFactory(new PropertyValueFactory<>("supplierName"));
-        buyBrandCol.setCellValueFactory(new PropertyValueFactory<>("brand"));
-        buyTypeCol.setCellValueFactory(new PropertyValueFactory<>("productType"));
-        buyTotalCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        buyPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
-        buySubTotalCol.setCellValueFactory(new PropertyValueFactory<>("subTotal"));
-
         sellDateCol.setCellValueFactory(new PropertyValueFactory<>("invoiceDate"));
         sellInvoiceCol.setCellValueFactory(new PropertyValueFactory<>("invoiceNumber"));
         sellOnCustomerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
@@ -188,6 +96,15 @@ public class TransactionForms {
         sellTotalCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         sellPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
         sellSubTotalCol.setCellValueFactory(new PropertyValueFactory<>("subTotal"));
+
+        buyDateCol.setCellValueFactory(new PropertyValueFactory<>("invoiceDate"));
+        buyInvoiceCol.setCellValueFactory(new PropertyValueFactory<>("invoiceNumber"));
+        buyOnSupplierNameCol.setCellValueFactory(new PropertyValueFactory<>("supplierName"));
+        buyBrandCol.setCellValueFactory(new PropertyValueFactory<>("brand"));
+        buyTypeCol.setCellValueFactory(new PropertyValueFactory<>("productType"));
+        buyTotalCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        buyPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        buySubTotalCol.setCellValueFactory(new PropertyValueFactory<>("subTotal"));
 
         buyTable.setItems(buyData);
         sellTable.setItems(sellData);
@@ -201,6 +118,10 @@ public class TransactionForms {
 
         buyDate.setValue(LocalDate.now());
         sellDate.setValue(LocalDate.now());
+
+        System.out.println("buyDate: " + buyDate.getValue());
+        System.out.println("sellDate: " + sellDate.getValue());
+
     }
 
     private void loadBuyData() {
@@ -337,27 +258,6 @@ public class TransactionForms {
         });
     }
 
-    // private void loadCustomerIDs() {
-    // ObservableList<Object> customerIds =
-    // FXCollections.observableArrayList(sellDao.getCustomerIds());
-    // customerIDDropDown.setItems(customerIds);
-    // if (!customerIds.isEmpty()) {
-    // customerIDDropDown.getSelectionModel().selectFirst();
-    // String firstCustomerId = customerIds.get(0).toString();
-    // String firstCustomerName = sellDao.getCustomerName(firstCustomerId);
-    // customerNameField.setText(firstCustomerName);
-    // }
-
-    // customerIDDropDown.getSelectionModel().selectedItemProperty().addListener((observable,
-    // oldValue, newValue) -> {
-    // if (newValue != null) {
-    // String customerId = newValue.toString();
-    // String customerName = sellDao.getCustomerName(customerId);
-    // customerNameField.setText(customerName);
-    // }
-    // });
-    // }
-
     @FXML
     private void addBuyButton() {
         if (tabPane.getSelectionModel().getSelectedIndex() == 0) {
@@ -382,42 +282,72 @@ public class TransactionForms {
 
             buyTable.getItems().add(purchasing);
             calculateTotalPrice();
-        } else {
-            // Add sales data to temporary UI table
-            Sales sales = new Sales();
-            sales.setInvoice(new Invoice());
-            sales.getInvoice().setInvoiceDate(sellDate.getValue());
-            sales.setStockId((int) sellStockIDDropdown.getValue());
-            sales.setBrand(sellBrandField.getText());
-            sales.setProductType(sellTypeField.getText());
-            sales.setPrice(new BigDecimal(sellPriceField.getText()));
-            sales.setCustomerId((int) customerIDDropDown.getValue());
-            sales.setCustomerName(customerNameField.getText());
-            sales.setQuantity(Integer.parseInt(sellTotalField.getText()));
-            sales.setSubTotal(sales.getPrice().multiply(BigDecimal.valueOf(sales.getQuantity())));
-            sales.setPriceTotal(sales.getSubTotal());
-            sellTable.getItems().add(sales);
         }
+    }
+
+    @FXML
+    private void addSellButton() {
+        Sales sales = new Sales();
+
+        // Initialize the Invoice object if it's null
+        if (sales.getInvoice() == null) {
+            sales.setInvoice(new Invoice());
+        }
+
+        sales.setInvoice(new Invoice());
+        sales.getInvoice().setInvoiceDate(sellDate.getValue());
+        sales.setStockId((int) sellStockIDDropdown.getValue());
+        sales.setBrand(sellBrandField.getText());
+        sales.setProductType(sellTypeField.getText());
+        sales.setPrice(new BigDecimal(sellPriceField.getText()));
+        sales.setCustomerId((int) customerIDDropDown.getValue());
+        sales.setCustomerName(customerNameField.getText());
+        sales.setQuantity(Integer.parseInt(sellTotalField.getText()));
+        sales.setSubTotal(sales.getPrice().multiply(BigDecimal.valueOf(sales.getQuantity())));
+        sales.setPriceTotal(sales.getSubTotal());
+        sellTable.getItems().add(sales);
         calculateTotalPrice();
     }
 
     @FXML
     private void editBuyButton() {
-        Purchasing purchasing = buyTable.getSelectionModel().getSelectedItem();
-        if (purchasing != null) {
-            purchasing.getInvoice().setInvoiceDate((buyDate.getValue()));
-            purchasing.setStockId((int) buyStockIDDropdown.getValue());
-            purchasing.setBrand(buyBrandField.getText());
-            purchasing.setProductType(buyTypeField.getText());
-            purchasing.setPrice(new BigDecimal(buyPriceField.getText()));
-            purchasing.setSupplierId((int) supplierIDDropDown.getValue());
-            purchasing.setSupplierName(supplierNameField.getText());
-            purchasing.setQuantity(Integer.parseInt(buyTotalField.getText()));
-            purchasing.setSubTotal(purchasing.getPrice().multiply(BigDecimal.valueOf(purchasing.getQuantity())));
-            purchasing.setPriceTotal(purchasing.getSubTotal());
+        Purchasing selectedPurchasing = buyTable.getSelectionModel().getSelectedItem();
+        if (selectedPurchasing != null) {
+            // Populate the form fields with the data from the selected item
+            buyDate.setValue(selectedPurchasing.getInvoice().getInvoiceDate());
+            buyStockIDDropdown.setValue(selectedPurchasing.getStockId());
+            buyBrandField.setText(selectedPurchasing.getBrand());
+            buyTypeField.setText(selectedPurchasing.getProductType());
+            buyPriceField.setText(selectedPurchasing.getPrice().toString());
+            supplierIDDropDown.setValue(selectedPurchasing.getSupplierId());
+            supplierNameField.setText(selectedPurchasing.getSupplierName());
+            buyTotalField.setText(String.valueOf(selectedPurchasing.getQuantity()));
 
-            buyDao.updatePurchasing(purchasing);
+            // Allow the user to modify the data in the form fields
+
+            // When the user clicks the save button, update the data in the database
+            // with the new values from the form fields
+            selectedPurchasing.getInvoice().setInvoiceDate(buyDate.getValue());
+            selectedPurchasing.setStockId((int) buyStockIDDropdown.getValue());
+            selectedPurchasing.setBrand(buyBrandField.getText());
+            selectedPurchasing.setProductType(buyTypeField.getText());
+            selectedPurchasing.setPrice(new BigDecimal(buyPriceField.getText()));
+            selectedPurchasing.setSupplierId((int) supplierIDDropDown.getValue());
+            selectedPurchasing.setSupplierName(supplierNameField.getText());
+            selectedPurchasing.setQuantity(Integer.parseInt(buyTotalField.getText()));
+            selectedPurchasing.setSubTotal(
+                    selectedPurchasing.getPrice().multiply(BigDecimal.valueOf(selectedPurchasing.getQuantity())));
+            selectedPurchasing.setPriceTotal(selectedPurchasing.getSubTotal());
+
+            buyDao.updatePurchasing(selectedPurchasing);
             loadBuyData();
+        } else {
+            // Show an error message if no item is selected
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select an item to edit.");
+            alert.showAndWait();
         }
     }
 
@@ -431,51 +361,110 @@ public class TransactionForms {
     }
 
     @FXML
-    private void addSellButton() {
-        Sales sales = new Sales();
-        sales.setInvoice(new Invoice());
-        sales.getInvoice().setInvoiceDate((sellDate.getValue()));
-        sales.setStockId(sellStockIDDropdown.getValue());
-        sales.setBrand(sellBrandField.getText());
-        sales.setProductType(sellTypeField.getText());
-        sales.setPrice(new BigDecimal(sellPriceField.getText()));
-        sales.setCustomerId((int) customerIDDropDown.getValue());
-        sales.setCustomerName(customerNameField.getText());
-        sales.setQuantity(Integer.parseInt(sellTotalField.getText()));
-        sales.setSubTotal(sales.getPrice().multiply(BigDecimal.valueOf(sales.getQuantity())));
-        sales.setPriceTotal(sales.getSubTotal());
-
-        saleDao.addSales(sales);
-        loadSellData();
-    }
-
-    @FXML
     private void editSellButton() {
-        Sales sales = sellTable.getSelectionModel().getSelectedItem();
-        if (sales != null) {
-            sales.getInvoice().setInvoiceDate((sellDate.getValue()));
-            sales.setStockId(sellStockIDDropdown.getValue());
-            sales.setBrand(sellBrandField.getText());
-            sales.setProductType(sellTypeField.getText());
-            sales.setPrice(new BigDecimal(sellPriceField.getText()));
-            sales.setCustomerId((int) customerIDDropDown.getValue());
-            sales.setCustomerName(customerNameField.getText());
-            sales.setQuantity(Integer.parseInt(sellTotalField.getText()));
-            sales.setSubTotal(sales.getPrice().multiply(BigDecimal.valueOf(sales.getQuantity())));
-            sales.setPriceTotal(sales.getSubTotal());
+        Sales selectedSales = sellTable.getSelectionModel().getSelectedItem();
+        if (selectedSales != null) {
+            // Populate the form fields with the data from the selected item
+            sellDate.setValue(selectedSales.getInvoice().getInvoiceDate());
+            sellStockIDDropdown.setValue(selectedSales.getStockId());
+            sellBrandField.setText(selectedSales.getBrand());
+            sellTypeField.setText(selectedSales.getProductType());
+            sellPriceField.setText(selectedSales.getPrice().toString());
+            customerIDDropDown.setValue(selectedSales.getCustomerId());
+            customerNameField.setText(selectedSales.getCustomerName());
+            sellTotalField.setText(String.valueOf(selectedSales.getQuantity()));
 
-            saleDao.updateSales(sales);
+            // Allow the user to modify the data in the form fields
+
+            // When the user clicks the save button, update the data in the database
+            // with the new values from the form fields
+            selectedSales.getInvoice().setInvoiceDate(sellDate.getValue());
+            selectedSales.setStockId((int) sellStockIDDropdown.getValue());
+            selectedSales.setBrand(sellBrandField.getText());
+            selectedSales.setProductType(sellTypeField.getText());
+            selectedSales.setPrice(new BigDecimal(sellPriceField.getText()));
+            selectedSales.setCustomerId((int) customerIDDropDown.getValue());
+            selectedSales.setCustomerName(customerNameField.getText());
+            selectedSales.setQuantity(Integer.parseInt(sellTotalField.getText()));
+            selectedSales
+                    .setSubTotal(selectedSales.getPrice().multiply(BigDecimal.valueOf(selectedSales.getQuantity())));
+            selectedSales.setPriceTotal(selectedSales.getSubTotal());
+
+            saleDao.updateSales(selectedSales);
             loadSellData();
+        } else {
+            // Show an error message if no item is selected
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select an item to edit.");
+            alert.showAndWait();
         }
     }
 
     @FXML
     private void removeSellButton() {
-        Sales sales = sellTable.getSelectionModel().getSelectedItem();
-        if (sales != null) {
-            saleDao.deleteSales(sales.getInvoice().getInvoiceNumber());
-            loadSellData();
+        Sales selectedSales = sellTable.getSelectionModel().getSelectedItem();
+        if (selectedSales != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure you want to remove this sales item?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                sellTable.getItems().remove(selectedSales);
+                calculateSellTotalPrice();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a sales item to remove.");
+            alert.showAndWait();
         }
+    }
+
+    @FXML
+    private void confirmSellButton() {
+        List<Sales> salesList = new ArrayList<>(sellTable.getItems());
+        confirmSales(salesList);
+        sellTable.getItems().clear();
+        currentInvoiceNumber = generateInvoiceNumber();
+        sellInvoiceNumber.setText(String.valueOf(currentInvoiceNumber));
+        calculateTotalPrice();
+    }
+
+    @FXML
+    private void calculateSellTotalPrice() {
+        BigDecimal total = BigDecimal.ZERO;
+        for (Sales sales : sellTable.getItems()) {
+            total = total.add(sales.getSubTotal());
+        }
+        sellTotalPrice.setText(total.toString());
+    }
+
+    @FXML
+    private void searchDataSellAction() {
+        FilteredList<Sales> filteredData = new FilteredList<>(sellData);
+        // Implement the logic to filter the sales data based on the search query
+        sellTable.setItems(filteredData);
+    }
+
+    @FXML
+    private void resetSellButton() {
+        sellDate.setValue(LocalDate.now());
+        currentInvoiceNumber = saleDao.generateInvoiceNumber();
+        sellInvoiceNumber.setText(String.valueOf(currentInvoiceNumber));
+        sellStockIDDropdown.getSelectionModel().selectFirst();
+        sellBrandField.setText("");
+        sellTypeField.setText("");
+        sellPriceField.setText("");
+        customerIDDropDown.getSelectionModel().clearSelection();
+        customerNameField.setText("");
+        sellTotalField.setText("");
+        sellTotalPrice.setText("");
+        sellData.clear();
+        sellTable.setItems(sellData);
     }
 
     @FXML
@@ -488,7 +477,7 @@ public class TransactionForms {
             buyInvoiceNumber.setText(String.valueOf(currentInvoiceNumber));
         } else {
             List<Sales> salesList = new ArrayList<>(sellTable.getItems());
-            // confirmSales(salesList);
+            confirmSales(salesList);
             sellTable.getItems().clear();
             currentInvoiceNumber = generateInvoiceNumber();
             sellInvoiceNumber.setText(String.valueOf(currentInvoiceNumber));
@@ -541,14 +530,6 @@ public class TransactionForms {
     }
 
     @FXML
-    private void confirmSellButton() {
-        List<Sales> salesList = new ArrayList<>(sellData);
-        saleDao.confirmSales(salesList);
-        sellData.clear();
-        loadSellData();
-    }
-
-    @FXML
     private void calculateBuyTotalPrice() {
         BigDecimal total = BigDecimal.ZERO;
 
@@ -562,26 +543,7 @@ public class TransactionForms {
     // calculateSellTotalPrice
 
     @FXML
-    private void calculateSellTotalPrice() {
-        BigDecimal total = BigDecimal.ZERO;
-
-        for (Purchasing purchasing : buyData) {
-            total = total.add(purchasing.getSubTotal());
-        }
-
-        buyTotalPrice.setText(total.toString());
-    }
-
-    @FXML
     private void searchDataBuyAction() {
-        // Purchasing purchasing = buyDao.searchDataBuy(buyStockIDDropdown.getValue());
-        // buyBrandField.setText(purchasing.getBrand());
-        // buyTypeField.setText(purchasing.getProductType());
-        // buyPriceField.setText(purchasing.getPrice().toString());
-    }
-
-    @FXML
-    private void searchDataSellAction() {
         // Purchasing purchasing = buyDao.searchDataBuy(buyStockIDDropdown.getValue());
         // buyBrandField.setText(purchasing.getBrand());
         // buyTypeField.setText(purchasing.getProductType());
@@ -593,8 +555,4 @@ public class TransactionForms {
 
     }
 
-    @FXML
-    private void resetSellButton() {
-
-    }
 }
