@@ -108,7 +108,7 @@ public class TransactionForms {
     private TextField sellPriceField;
 
     @FXML
-    private ComboBox<Object> customerIDDropDown;
+    private ComboBox<Integer> customerIDDropDown;
 
     @FXML
     private TextField customerNameField;
@@ -180,8 +180,8 @@ public class TransactionForms {
         buyPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
         buySubTotalCol.setCellValueFactory(new PropertyValueFactory<>("subTotal"));
 
-        sellDateCol.setCellValueFactory(new PropertyValueFactory<>("invoice.invoiceDate"));
-        sellInvoiceCol.setCellValueFactory(new PropertyValueFactory<>("invoice.invoiceNumber"));
+        sellDateCol.setCellValueFactory(new PropertyValueFactory<>("invoiceDate"));
+        sellInvoiceCol.setCellValueFactory(new PropertyValueFactory<>("invoiceNumber"));
         sellOnCustomerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         sellBrandCol.setCellValueFactory(new PropertyValueFactory<>("brand"));
         sellTypeCol.setCellValueFactory(new PropertyValueFactory<>("productType"));
@@ -197,7 +197,10 @@ public class TransactionForms {
 
         loadStockIDs();
         loadSupplierIDs();
-        // loadCustomerIDs();
+        loadIDs();
+
+        buyDate.setValue(LocalDate.now());
+        sellDate.setValue(LocalDate.now());
     }
 
     private void loadBuyData() {
@@ -248,6 +251,88 @@ public class TransactionForms {
                 String supplierId = newValue.toString();
                 String supplierName = buyDao.getSupplierName(supplierId);
                 supplierNameField.setText(supplierName);
+            }
+        });
+    }
+
+    private void loadIDs() {
+        // Load stock IDs for buying transactions
+        ObservableList<Object> buyStockIds = FXCollections.observableArrayList(buyDao.getAllStockIds());
+        buyStockIDDropdown.setItems(buyStockIds);
+        if (!buyStockIds.isEmpty()) {
+            buyStockIDDropdown.getSelectionModel().selectFirst();
+            String firstBuyStockId = buyStockIds.get(0).toString();
+            List<String> firstBuyStockDetails = buyDao.getBrandTypePrice(firstBuyStockId);
+            buyBrandField.setText(firstBuyStockDetails.get(0));
+            buyTypeField.setText(firstBuyStockDetails.get(1));
+            buyPriceField.setText(firstBuyStockDetails.get(2));
+        }
+
+        buyStockIDDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                String stockId = newValue.toString();
+                List<String> stockDetails = buyDao.getBrandTypePrice(stockId);
+                buyBrandField.setText(stockDetails.get(0));
+                buyTypeField.setText(stockDetails.get(1));
+                buyPriceField.setText(stockDetails.get(2));
+            }
+        });
+
+        // Load stock IDs for selling transactions
+        ObservableList<Integer> sellStockIds = FXCollections.observableArrayList(saleDao.getAllStockIds());
+        sellStockIDDropdown.setItems(sellStockIds);
+        if (!sellStockIds.isEmpty()) {
+            sellStockIDDropdown.getSelectionModel().selectFirst();
+            int firstSellStockId = sellStockIds.get(0);
+            List<String> firstSellStockDetails = saleDao.getBrandTypePrice(firstSellStockId);
+            sellBrandField.setText(firstSellStockDetails.get(0));
+            sellTypeField.setText(firstSellStockDetails.get(1));
+            sellPriceField.setText(firstSellStockDetails.get(2));
+        }
+
+        sellStockIDDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                int stockId = newValue;
+                List<String> stockDetails = saleDao.getBrandTypePrice(stockId);
+                sellBrandField.setText(stockDetails.get(0));
+                sellTypeField.setText(stockDetails.get(1));
+                sellPriceField.setText(stockDetails.get(2));
+            }
+        });
+
+        // Load supplier IDs for buying transactions
+        ObservableList<Object> supplierIds = FXCollections.observableArrayList(buyDao.getSupplierIds());
+        supplierIDDropDown.setItems(supplierIds);
+        if (!supplierIds.isEmpty()) {
+            supplierIDDropDown.getSelectionModel().selectFirst();
+            String firstSupplierId = supplierIds.get(0).toString();
+            String firstSupplierName = buyDao.getSupplierName(firstSupplierId);
+            supplierNameField.setText(firstSupplierName);
+        }
+
+        supplierIDDropDown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                String supplierId = newValue.toString();
+                String supplierName = buyDao.getSupplierName(supplierId);
+                supplierNameField.setText(supplierName);
+            }
+        });
+
+        // Load customer IDs for selling transactions
+        ObservableList<Integer> customerIds = FXCollections.observableArrayList(saleDao.getCustomerIds());
+        customerIDDropDown.setItems(customerIds);
+        if (!customerIds.isEmpty()) {
+            customerIDDropDown.getSelectionModel().selectFirst();
+            int firstCustomerId = customerIds.get(0);
+            String firstCustomerName = saleDao.getCustomerName(firstCustomerId);
+            customerNameField.setText(firstCustomerName);
+        }
+
+        customerIDDropDown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                int customerId = newValue;
+                String customerName = saleDao.getCustomerName(customerId);
+                customerNameField.setText(customerName);
             }
         });
     }

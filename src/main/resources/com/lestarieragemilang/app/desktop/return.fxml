@@ -161,8 +161,6 @@
                               <TableColumn fx:id="returnIDCol" prefWidth="75.0" text="ID PENGEMBALIAN" />
                               <TableColumn fx:id="returnInvoiceCol" prefWidth="75.0" text="FAKTUR" />
                               <TableColumn fx:id="returnTypeCol" prefWidth="75.0" text="JENIS PENGEMBALIAN" />
-                              <TableColumn fx:id="returnTotalStockCol" prefWidth="75.0" text="TOTAL BARANG" />
-                              <TableColumn fx:id="returnTotalPriceCol" prefWidth="75.0" text="TOTAL HARGA" />
                               <TableColumn fx:id="returnReasonCol" prefWidth="75.0" text="ALASAN" />
                            </columns>
                            <columnResizePolicy>

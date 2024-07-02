@@ -169,4 +169,83 @@ public class SaleDaoImpl extends DatabaseConfiguration implements SaleDao {
 
         return 1;
     }
+
+public List<Integer> getAllStockIds() {
+    String sql = "SELECT stock_id FROM stock";
+
+    List<Integer> stockIds = new ArrayList<>();
+
+    try (Connection conn = DatabaseConfiguration.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+        while (rs.next()) {
+            stockIds.add(rs.getInt("stock_id"));
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return stockIds;
+}
+
+public List<String> getBrandTypePrice(int stockId) {
+    String sql = "SELECT brand, product_type, price FROM stock WHERE stock_id=?";
+
+    List<String> stockDetails = new ArrayList<>();
+
+    try (Connection conn = DatabaseConfiguration.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, stockId);
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                stockDetails.add(rs.getString("brand"));
+                stockDetails.add(rs.getString("product_type"));
+                stockDetails.add(rs.getBigDecimal("price").toString());
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return stockDetails;
+}
+
+public List<Integer> getCustomerIds() {
+    String sql = "SELECT customer_id FROM customer";
+
+    List<Integer> customerIds = new ArrayList<>();
+
+    try (Connection conn = DatabaseConfiguration.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+        while (rs.next()) {
+            customerIds.add(rs.getInt("customer_id"));
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return customerIds;
+}
+
+public String getCustomerName(int customerId) {
+    String sql = "SELECT customer_name FROM customer WHERE customer_id=?";
+
+    try (Connection conn = DatabaseConfiguration.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, customerId);
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getString("customer_name");
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
+
 }
