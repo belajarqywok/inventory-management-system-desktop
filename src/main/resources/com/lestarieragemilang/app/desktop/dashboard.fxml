@@ -224,9 +224,14 @@
                   </Label>
                </children>
             </HBox>
-            <HBox alignment="CENTER" layoutX="1002.0" layoutY="20.0" prefHeight="40.0" prefWidth="180.0" spacing="20.0">
+            <HBox alignment="CENTER" layoutX="967.0" layoutY="20.0" prefHeight="40.0" prefWidth="215.0" spacing="20.0">
                <children>
                   <JFXButton alignment="BASELINE_CENTER" onMouseClicked="#setSceneLogin" prefHeight="40.0" prefWidth="85.0" style="-fx-background-radius: 10; -fx-cursor: hand; -fx-background-color: #EEEEEE; -fx-text-fill: #333333; -fx-border-color: gray; -fx-border-radius: 10; -fx-font-weight: bold;" text="Keluar" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton alignment="BASELINE_CENTER" onMouseClicked="#isMinimizeApp" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 10; -fx-cursor: hand; -fx-background-color: #EEEEEE; -fx-text-fill: #333333; -fx-border-color: gray; -fx-border-radius: 10; -fx-font-weight: bold;" text="-" textFill="#333333">
                      <font>
                         <Font size="14.0" />
                      </font>

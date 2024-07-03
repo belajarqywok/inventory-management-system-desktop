@@ -35,8 +35,8 @@ public class Dashboard {
     @FXML
     private Label localTimeApp;
 
-    @FXML
-    private BorderPane bp;
+    // @FXML
+    // private BorderPane bp;
 
     @FXML
     public void initialize() throws IOException {
@@ -69,6 +69,12 @@ public class Dashboard {
         if (result.get() == ButtonType.OK) {
             System.exit(0);
         }
+    }
+
+    @FXML
+    void isMinimizeApp(MouseEvent event) {
+        Stage stage = (Stage) setScene.getScene().getWindow();
+        stage.setIconified(true);
     }
 
     @FXML
