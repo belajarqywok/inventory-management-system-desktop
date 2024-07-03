@@ -28,11 +28,6 @@
                                  </font>
                               </Label>
                               <TextField fx:id="categorySearchField" prefHeight="30.0" prefWidth="250.0" style="-fx-background-radius: 7;" />
-                              <JFXButton buttonType="RAISED" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND; -fx-text-fill: #E8E7DE; -fx-border-radius: 10; -fx-font-weight: bold;" text="CARI" textFill="WHITE">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </JFXButton>
                            </children>
                         </HBox>
                         <HBox alignment="CENTER" layoutX="20.0" layoutY="17.0" spacing="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">

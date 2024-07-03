@@ -21,13 +21,9 @@ import java.util.Optional;
 import java.time.LocalDate;
 import java.sql.SQLException;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.collections.transformation.FilteredList;
 
 public class ReturnForm {
 

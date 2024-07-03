@@ -29,11 +29,6 @@
                                  </font>
                               </Label>
                               <TextField fx:id="supplierSearchField" prefHeight="32.0" prefWidth="250.0" promptText="Cari Data Supplier" style="-fx-background-radius: 7;" />
-                              <JFXButton buttonType="RAISED" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND; -fx-font-weight: bold; -fx-border-radius: 10; -fx-text-fill: #E8E7DE;" text="CARI" textFill="WHITE">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </JFXButton>
                            </children>
                         </HBox>
                         <HBox layoutX="20.0" layoutY="17.0" spacing="30.0">

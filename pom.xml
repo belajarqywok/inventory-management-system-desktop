@@ -19,14 +19,22 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
+<<<<<<< HEAD
             <version>23-ea+22</version>
+=======
+            <version>11.0.2</version>
+>>>>>>> 53ac10b136d1f0294e7ceb93665201bbd7c2e5f9
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-fxml -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
+<<<<<<< HEAD
             <version>23-ea+22</version>
+=======
+            <version>11.0.2</version>
+>>>>>>> 53ac10b136d1f0294e7ceb93665201bbd7c2e5f9
         </dependency>
 
 
