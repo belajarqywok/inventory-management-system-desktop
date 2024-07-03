@@ -78,9 +78,9 @@ public class CategoryForm {
             if (editCategoryButtonText.getText().equals("KONFIRMASI")) {
                 // Confirmation alert
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation");
+                alert.setTitle("Konfirmasi");
                 alert.setHeaderText(null);
-                alert.setContentText("Do you want to update the category?");
+                alert.setContentText("Apakah Anda ingin memperbarui kategori?");
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
@@ -95,13 +95,13 @@ public class CategoryForm {
 
                     categoryTable.refresh();
 
-                    editCategoryButtonText.setText("EDIT");
+                    editCategoryButtonText.setText("UBAH");
 
                     // Success alert
                     Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                    successAlert.setTitle("Success");
+                    successAlert.setTitle("Sukses");
                     successAlert.setHeaderText(null);
-                    successAlert.setContentText("Category has been successfully updated.");
+                    successAlert.setContentText("Kategori telah berhasil diperbarui.");
 
                     successAlert.showAndWait();
                 }
@@ -117,9 +117,9 @@ public class CategoryForm {
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
+            alert.setTitle("Informasi");
             alert.setHeaderText(null);
-            alert.setContentText("Please select a category to edit.");
+            alert.setContentText("Silakan pilih kategori yang akan diedit.");
 
             alert.showAndWait();
         }
@@ -130,10 +130,10 @@ public class CategoryForm {
         Category category = categoryTable.getSelectionModel().getSelectedItem();
         if (category != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                    "Are you sure you want to delete the following category: \n" + category.toString() + "?",
+                    "Apakah Anda yakin ingin menghapus kategori berikut: \n" + category.toString() + "?",
                     ButtonType.YES,
                     ButtonType.NO);
-            alert.setTitle("Delete Category");
+            alert.setTitle("Kategori Dihapus");
             alert.setHeaderText(null);
 
             Optional<ButtonType> result = alert.showAndWait();
@@ -146,13 +146,13 @@ public class CategoryForm {
                 categoryTable.setItems(FXCollections.observableArrayList(categories));
 
                 Alert infoAlert = new Alert(Alert.AlertType.INFORMATION,
-                        "Category with ID: " + category.getCategoryId() + " deleted.");
-                infoAlert.setTitle("Category Deleted");
+                        "Kategori dengan ID: " + category.getCategoryId() + " dihapus.");
+                infoAlert.setTitle("Kategori Dihapus");
                 infoAlert.setHeaderText(null);
                 infoAlert.showAndWait();
             } else {
-                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION, "Deletion cancelled.");
-                infoAlert.setTitle("Deletion Cancelled");
+                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION, "Penghapusan dibatalkan.");
+                infoAlert.setTitle("Penghapusan dibatalkan.");
                 infoAlert.setHeaderText(null);
                 infoAlert.showAndWait();
             }

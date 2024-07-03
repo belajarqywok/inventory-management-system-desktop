@@ -56,19 +56,21 @@ public class StockForm {
     @FXML
     void addStockButton(ActionEvent event) {
         List<Category> categories = categoryDao.getAllCategories();
-
+        Category selectedCategory = (Category) categoryIDDropDown.getValue();
+        int categoryID = selectedCategory.getCategoryId();
+        
         Stock stock = new Stock(
-                gen.getId(),
-                (int) categoryIDDropDown.getValue(),
-                categories.get((int) categoryIDDropDown.getValue()).getCategoryBrand(),
-                categories.get((int) categoryIDDropDown.getValue()).getCategoryType(),
-                categories.get((int) categoryIDDropDown.getValue()).getCategorySize(),
-                categories.get((int) categoryIDDropDown.getValue()).getCategoryWeight(),
-                categories.get((int) categoryIDDropDown.getValue()).getCategoryUnit(),
-                stockQuantityField.getText(),
-                stockBuyPriceField.getText(),
-                stockSellPriceField.getText());
-
+            gen.getId(),
+            categoryID,
+            selectedCategory.getCategoryBrand(),
+            selectedCategory.getCategoryType(),
+            selectedCategory.getCategorySize(),
+            selectedCategory.getCategoryWeight(),
+            selectedCategory.getCategoryUnit(),
+            stockQuantityField.getText(),
+            stockBuyPriceField.getText(),
+            stockSellPriceField.getText());
+        
         stockDao.addStock(stock);
 
         stockTable.setItems(FXCollections.observableArrayList());
@@ -98,9 +100,9 @@ public class StockForm {
             if (editStockButtonText.getText().equals("KONFIRMASI")) {
                 // Confirmation alert
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation");
+                alert.setTitle("Konfirmasi");
                 alert.setHeaderText(null);
-                alert.setContentText("Do you want to update the stock?");
+                alert.setContentText("Apakah anda ingin mengupdate stok?");
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
@@ -113,13 +115,13 @@ public class StockForm {
 
                     stockTable.refresh();
 
-                    editStockButtonText.setText("EDIT");
+                    editStockButtonText.setText("UBAH");
 
                     // Success alert
                     Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                    successAlert.setTitle("Success");
+                    successAlert.setTitle("Sukses");
                     successAlert.setHeaderText(null);
-                    successAlert.setContentText("Stock has been successfully updated.");
+                    successAlert.setContentText("Stok telah berhasil diperbarui.");
 
                     successAlert.showAndWait();
                 }
@@ -133,9 +135,9 @@ public class StockForm {
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
+            alert.setTitle("Informasi");
             alert.setHeaderText(null);
-            alert.setContentText("Please select a stock to edit.");
+            alert.setContentText("Silakan pilih stok yang akan diedit.");
 
             alert.showAndWait();
         }
@@ -160,9 +162,9 @@ public class StockForm {
         Stock stock = stockTable.getSelectionModel().getSelectedItem(); // Declare and initialize the stock variable
         if (stock != null) { // Check if stock is not null
             Alert alert = new Alert(AlertType.CONFIRMATION,
-                    "Are you sure you want to delete the following stock: \n" + stock.toString() + "?", ButtonType.YES,
+                    "Apakah Anda yakin ingin menghapus stok berikut: \n" + stock.toString() + "?", ButtonType.YES,
                     ButtonType.NO);
-            alert.setTitle("Delete Stock");
+            alert.setTitle("Hapus Stok");
             alert.setHeaderText(null);
 
             Optional<ButtonType> result = alert.showAndWait();
@@ -174,14 +176,14 @@ public class StockForm {
                 stockTable.setItems(FXCollections.observableArrayList(stocks));
 
                 Alert infoAlert = new Alert(AlertType.INFORMATION,
-                        "Stock with ID: " + stock.getStockID() + " deleted.");
-                infoAlert.setTitle("Stock Deleted");
+                        "Stok dengan ID: " + stock.getStockID() + " hapus.");
+                infoAlert.setTitle("Hapus Stok");
                 infoAlert.setHeaderText(null);
                 infoAlert.showAndWait();
 
             } else {
-                Alert infoAlert = new Alert(AlertType.INFORMATION, "Deletion cancelled.");
-                infoAlert.setTitle("Deletion Cancelled");
+                Alert infoAlert = new Alert(AlertType.INFORMATION, "Penghapusan dibatalkan.");
+                infoAlert.setTitle("Penghapusan Dibatalkan");
                 infoAlert.setHeaderText(null);
                 infoAlert.showAndWait();
             }

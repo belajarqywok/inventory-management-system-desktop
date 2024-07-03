@@ -84,7 +84,7 @@ public class SupplierForm {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Update Supplier");
                 alert.setHeaderText(null);
-                alert.setContentText("Are you sure you want to update this supplier?");
+                alert.setContentText("Apakah Anda yakin ingin mengupdate supplier ini?");
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -95,7 +95,6 @@ public class SupplierForm {
 
                 editSupplierButtonText.setText("Edit");
             } else {
-                // Populate the fields with the selected supplier's details
                 supplierIDIncrement.setText(String.valueOf(selectedSupplier.getSupplierId()));
                 supplierNameField.setText(selectedSupplier.getSupplierName());
                 supplierAddressField.setText(selectedSupplier.getSupplierAddress());
@@ -106,9 +105,9 @@ public class SupplierForm {
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
+            alert.setTitle("Informasi");
             alert.setHeaderText(null);
-            alert.setContentText("Please select a supplier to edit.");
+            alert.setContentText("Silakan pilih supplier untuk diedit.");
 
             alert.showAndWait();
         }
@@ -126,8 +125,13 @@ public class SupplierForm {
 
     @FXML
     void removeSupplierButton(ActionEvent event) {
-        if (JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this supplier?", "Delete Supplier",
-                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Hapus Supplier");
+        alert.setHeaderText("Apakah Anda yakin ingin menghapus supplier ini?");
+        alert.setContentText("Tekan OK untuk melanjutkan atau Cancel untuk membatalkan.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             Supplier supplier = supplierTable.getSelectionModel().getSelectedItem();
             SupplierDao supplierDao = new SupplierDao();
             supplierDao.removeSupplier(supplier);
@@ -136,12 +140,19 @@ public class SupplierForm {
             list.remove(supplier);
             supplierTable.setItems(FXCollections.observableArrayList(list));
 
-            JOptionPane.showMessageDialog(null, "Supplier deleted.");
+            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+            successAlert.setTitle("Supplier Dihapus");
+            successAlert.setHeaderText(null);
+            successAlert.setContentText("Supplier telah dihapus.");
+            successAlert.showAndWait();
         } else {
-            JOptionPane.showMessageDialog(null, "Deletion cancelled.");
+            Alert cancelAlert = new Alert(Alert.AlertType.INFORMATION);
+            cancelAlert.setTitle("Penghapusan Dibatalkan");
+            cancelAlert.setHeaderText(null);
+            cancelAlert.setContentText("Penghapusan dibatalkan.");
+            cancelAlert.showAndWait();
         }
-
-    } 
+    }
 
     void supplierSearch() {
         FilteredList<Supplier> filteredData = new FilteredList<>(supplierTable.getItems());
@@ -164,11 +175,9 @@ public class SupplierForm {
 
     @FXML
     void initialize() {
-        // Supplier Table
         supplierTablePopulator.populateSupplierTable(supplierIDCol, supplierNameCol, supplierAddressCol,
                 supplierContactCol, supplierEmailCol, supplierTable);
 
-        // Add this in your initialize method
         supplierTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection == null) {
                 editSupplierButtonText.setText("Edit");

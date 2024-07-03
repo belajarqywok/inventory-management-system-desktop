@@ -15,7 +15,7 @@
       <AnchorPane prefHeight="573.0" prefWidth="970.0">
          <children>
             <TextField fx:id="SellListSearchField" layoutX="360.0" layoutY="135.0" prefHeight="32.0" prefWidth="250.0" promptText="Cari Faktur" style="-fx-background-radius: 5;" />
-            <JFXButton buttonType="RAISED" layoutX="435.0" layoutY="218.0" onMouseClicked="#printJasperSellList" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND;" text="PRINT DATA" textFill="WHITE">
+            <JFXButton buttonType="RAISED" layoutX="435.0" layoutY="218.0" onMouseClicked="#printJasperSellList" prefHeight="30.0" prefWidth="107.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND; -fx-font-weight: bold; -fx-text-fill: white;" text="PRINT DATA" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>

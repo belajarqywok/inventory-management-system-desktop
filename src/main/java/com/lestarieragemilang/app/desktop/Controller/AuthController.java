@@ -109,10 +109,10 @@ public class AuthController {
     @FXML
     private void registerAdmin() {
         if (!registerPassword.getText().equals(confirmPassword.getText())) {
-            System.out.println("Passwords do not match!");
+            System.out.println("Passwords tidak cocok!");
             return;
         }
-        System.out.println("Attempting to register: " + registerUsername.getText());
+        System.out.println("Mencoba mendaftar: " + registerUsername.getText());
         try {
             if (authDao.registerRepo(registerUsername.getText(), registerEmail.getText(), registerUsername.getText(),
                     registerPassword.getText())) {
@@ -146,7 +146,7 @@ public class AuthController {
         if (selectedProfile != null) {
             String[] parts = selectedProfile.split(" - ");
             if (parts.length < 2) {
-                System.err.println("Invalid profile format: " + selectedProfile);
+                System.err.println("Format profil tidak valid: " + selectedProfile);
                 return;
             }
             String username = parts[1].trim().replace("]", ""); // Extract username

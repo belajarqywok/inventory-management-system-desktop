@@ -305,9 +305,9 @@ public class TransactionForms {
             if (editBuyButtonText.getText().equals("KONFIRMASI")) {
                 // Confirmation alert
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation");
+                alert.setTitle("Konfirmasi");
                 alert.setHeaderText(null);
-                alert.setContentText("Do you want to update the purchasing item?");
+                alert.setContentText("Apakah Anda ingin mengupdate item pembelian ini?");
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
@@ -332,9 +332,9 @@ public class TransactionForms {
 
                     // Success alert
                     Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                    successAlert.setTitle("Success");
+                    successAlert.setTitle("Sukses");
                     successAlert.setHeaderText(null);
-                    successAlert.setContentText("Purchasing item has been successfully updated.");
+                    successAlert.setContentText("Item pembelian berhasil diperbarui.");
 
                     successAlert.showAndWait();
                 }
@@ -353,9 +353,9 @@ public class TransactionForms {
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
+            alert.setTitle("Informasi");
             alert.setHeaderText(null);
-            alert.setContentText("Please select a purchasing item to edit.");
+            alert.setContentText("Silakan pilih item pembelian untuk diedit.");
 
             alert.showAndWait();
         }
@@ -378,9 +378,9 @@ public class TransactionForms {
             if (editSellButtonText.getText().equals("KONFIRMASI")) {
                 // Confirmation alert
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation");
+                alert.setTitle("Konfirmasi");
                 alert.setHeaderText(null);
-                alert.setContentText("Do you want to update the sales item?");
+                alert.setContentText("Apakah Anda ingin mengupdate item penjualan ini?");
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
@@ -404,9 +404,9 @@ public class TransactionForms {
 
                     // Success alert
                     Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                    successAlert.setTitle("Success");
+                    successAlert.setTitle("Sukses");
                     successAlert.setHeaderText(null);
-                    successAlert.setContentText("Sales item has been successfully updated.");
+                    successAlert.setContentText("Item penjualan berhasil diperbarui.");
 
                     successAlert.showAndWait();
                 }
@@ -425,9 +425,9 @@ public class TransactionForms {
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
+            alert.setTitle("Informasi");
             alert.setHeaderText(null);
-            alert.setContentText("Please select a sales item to edit.");
+            alert.setContentText("Silakan pilih item penjualan untuk diedit.");
 
             alert.showAndWait();
         }
@@ -540,6 +540,7 @@ public class TransactionForms {
             }
         }
         buyTotalPrice.setText(total.toString());
+        sellTotalPrice.setText(total.toString());
     }
 
     private void confirmPurchasing(List<Purchasing> purchasingList) {
@@ -568,6 +569,8 @@ public class TransactionForms {
 
         buyTotalPrice.setText(total.toString());
     }
+
+    
 
     @FXML
     private void searchDataBuyAction() {

@@ -226,17 +226,17 @@
             </HBox>
             <HBox alignment="CENTER" layoutX="967.0" layoutY="20.0" prefHeight="40.0" prefWidth="215.0" spacing="20.0">
                <children>
-                  <JFXButton alignment="BASELINE_CENTER" onMouseClicked="#setSceneLogin" prefHeight="40.0" prefWidth="85.0" style="-fx-background-radius: 10; -fx-cursor: hand; -fx-background-color: #EEEEEE; -fx-text-fill: #333333; -fx-border-color: gray; -fx-border-radius: 10; -fx-font-weight: bold;" text="Keluar" textFill="WHITE">
+                  <JFXButton alignment="BASELINE_CENTER" onMouseClicked="#setSceneLogin" prefHeight="40.0" prefWidth="85.0" style="-fx-background-radius: 10; -fx-cursor: hand; -fx-background-color: #FBF6E2; -fx-text-fill: #333333; -fx-border-color: gray; -fx-border-radius: 10; -fx-font-weight: bold;" text="LOG OUT" textFill="WHITE">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton alignment="BASELINE_CENTER" onMouseClicked="#isMinimizeApp" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 10; -fx-cursor: hand; -fx-background-color: #EEEEEE; -fx-text-fill: #333333; -fx-border-color: gray; -fx-border-radius: 10; -fx-font-weight: bold;" text="-" textFill="#333333">
+                  <JFXButton alignment="BASELINE_CENTER" onMouseClicked="#isMinimizeApp" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 10; -fx-cursor: hand; -fx-background-color: orange; -fx-text-fill: white; -fx-border-color: gray; -fx-border-radius: 10; -fx-font-weight: bold;" text="-" textFill="#333333">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton alignment="BASELINE_CENTER" onMouseClicked="#isExitApp" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 10; -fx-cursor: hand; -fx-background-color: #EEEEEE; -fx-text-fill: #333333; -fx-border-color: gray; -fx-border-radius: 10; -fx-font-weight: bold;" text="X" textFill="#333333">
+                  <JFXButton alignment="BASELINE_CENTER" onMouseClicked="#isExitApp" prefHeight="40.0" prefWidth="40.0" style="-fx-background-radius: 10; -fx-cursor: hand; -fx-background-color: red; -fx-text-fill: white; -fx-border-color: gray; -fx-border-radius: 10; -fx-font-weight: bold;" text="X" textFill="#333333">
                      <font>
                         <Font size="14.0" />
                      </font>

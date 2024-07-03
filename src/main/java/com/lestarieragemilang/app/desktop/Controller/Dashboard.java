@@ -63,7 +63,7 @@ public class Dashboard {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Exit");
         alert.setHeaderText(null);
-        alert.setContentText("Are you sure you want to exit?");
+        alert.setContentText("Apakah Anda yakin ingin keluar?");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {

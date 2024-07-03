@@ -13,6 +13,11 @@ public class Customer {
         this.customerEmail = customerEmail;
     }
 
+    @Override
+    public String toString() {
+        return this.customerName;
+    }
+
     public int getCustomerId() {
         return customerId;
     }

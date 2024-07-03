@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 import com.jfoenix.controls.JFXButton;
 import com.lestarieragemilang.app.desktop.Dao.CustomerDao;
 import com.lestarieragemilang.app.desktop.Entities.Customer;
@@ -58,7 +57,6 @@ public class CustomerForm {
         customerTable.getItems().add(customer);
 
         tablePopulator();
-
     }
 
     @FXML
@@ -69,9 +67,9 @@ public class CustomerForm {
             if (editCustomerButtonText.getText().equals("KONFIRMASI")) {
                 // Confirmation alert
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation");
+                alert.setTitle("Konfirmasi");
                 alert.setHeaderText(null);
-                alert.setContentText("Do you want to update the customer?");
+                alert.setContentText("Apakah Anda ingin memperbarui pelanggan?");
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
@@ -89,9 +87,9 @@ public class CustomerForm {
 
                     // Success alert
                     Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                    successAlert.setTitle("Success");
+                    successAlert.setTitle("Sukses");
                     successAlert.setHeaderText(null);
-                    successAlert.setContentText("Customer has been successfully updated.");
+                    successAlert.setContentText("Pelanggan berhasil diperbarui.");
 
                     successAlert.showAndWait();
                 }
@@ -106,9 +104,9 @@ public class CustomerForm {
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
+            alert.setTitle("Informasi");
             alert.setHeaderText(null);
-            alert.setContentText("Please select a customer to edit.");
+            alert.setContentText("Silakan pilih pelanggan untuk diedit.");
 
             alert.showAndWait();
         }
@@ -119,10 +117,10 @@ public class CustomerForm {
         Customer customer = customerTable.getSelectionModel().getSelectedItem();
         if (customer != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                    "Are you sure you want to delete the following customer: \n" + customer.toString() + "?",
+                    "Apakah Anda yakin ingin menghapus pelanggan berikut: \n" + customer.toString() + "?",
                     ButtonType.YES,
                     ButtonType.NO);
-            alert.setTitle("Delete Customer");
+            alert.setTitle("Hapus Pelanggan");
             alert.setHeaderText(null);
 
             Optional<ButtonType> result = alert.showAndWait();
@@ -135,13 +133,13 @@ public class CustomerForm {
                 customerTable.setItems(FXCollections.observableArrayList(customers));
 
                 Alert infoAlert = new Alert(Alert.AlertType.INFORMATION,
-                        "Customer with ID: " + customer.getCustomerId() + " deleted.");
-                infoAlert.setTitle("Customer Deleted");
+                        "Pelanggan dengan ID: " + customer.getCustomerId() + " telah dihapus.");
+                infoAlert.setTitle("Pelanggan Dihapus");
                 infoAlert.setHeaderText(null);
                 infoAlert.showAndWait();
             } else {
-                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION, "Deletion cancelled.");
-                infoAlert.setTitle("Deletion Cancelled");
+                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION, "Penghapusan Dibatalkan");
+                infoAlert.setTitle("Konfirmasi");
                 infoAlert.setHeaderText(null);
                 infoAlert.showAndWait();
             }
@@ -159,7 +157,6 @@ public class CustomerForm {
         customerAddressField.clear();
         customerContactField.clear();
         customerEmailField.clear();
-
     }
 
     @FXML
