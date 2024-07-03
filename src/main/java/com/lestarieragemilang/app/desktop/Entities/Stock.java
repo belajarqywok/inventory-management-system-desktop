@@ -18,21 +18,16 @@ public class Stock {
         this.purchasePrice = purchasePrice;
         this.purchaseSell = purchaseSell;
     }
+    
+    public Stock(int stockID, String categoryBrand, String categoryType) {
+        this.stockID = stockID;
+        this.categoryBrand = categoryBrand;
+        this.categoryType = categoryType;
+    }
 
     @Override
     public String toString() {
-        return "Stock [\n" +
-                "    categoryBrand=" + categoryBrand + ",\n" +
-                "    categorySize=" + categorySize + ",\n" +
-                "    categoryType=" + categoryType + ",\n" +
-                "    categoryUnit=" + categoryUnit + ",\n" +
-                "    categoryWeight=" + categoryWeight + ",\n" +
-                "    purchasePrice=" + purchasePrice + ",\n" +
-                "    purchaseSell=" + purchaseSell + ",\n" +
-                "    quantity=" + quantity + ",\n" +
-                "    stockID=" + stockID + ",\n" +
-                "    stockOnCategoryID=" + stockOnCategoryID + "\n" +
-                "]";
+        return stockID + " - " + categoryBrand + "-" + categoryType;
     }
 
     public int getStockID() {
@@ -46,6 +41,8 @@ public class Stock {
     public int getStockOnCategoryID() {
         return stockOnCategoryID;
     }
+
+    
 
     public void setStockOnCategoryID(int stockOnCategoryID) {
         this.stockOnCategoryID = stockOnCategoryID;

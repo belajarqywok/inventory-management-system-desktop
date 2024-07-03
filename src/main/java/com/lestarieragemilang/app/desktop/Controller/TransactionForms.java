@@ -28,7 +28,6 @@ import com.lestarieragemilang.app.desktop.Utilities.SellTablePopulator;
 
 public class TransactionForms {
 
-    private int currentInvoiceNumber = 0;;
     @FXML
     private DatePicker buyDate, sellDate;
     @FXML
@@ -88,7 +87,6 @@ public class TransactionForms {
 
     @FXML
     private void initialize() {
-
         sellInvoiceNumber.setText(String.format("TRX-%05d", sellId));
         buyInvoiceNumber.setText(String.format("TRX-%05d", buyId));
 
@@ -96,9 +94,6 @@ public class TransactionForms {
 
         buyTable.setItems(buyData);
         sellTable.setItems(sellData);
-
-        loadBuyData();
-        loadSellData();
 
         loadStockIDs();
         loadSupplierIDs();
@@ -109,7 +104,6 @@ public class TransactionForms {
 
         System.out.println("buyDate: " + buyDate.getValue());
         System.out.println("sellDate: " + sellDate.getValue());
-
     }
 
     private void tablePopulator() {
@@ -467,7 +461,6 @@ public class TransactionForms {
         List<Sales> salesList = new ArrayList<>(sellTable.getItems());
         confirmSales(salesList);
         sellTable.getItems().clear();
-        currentInvoiceNumber = generateInvoiceNumber();
         sellIdValue = Integer.valueOf(sellId);
         sellInvoiceNumber.setText(String.format("TRX-%05d", sellIdValue));
         calculateTotalPrice();
@@ -527,7 +520,6 @@ public class TransactionForms {
             List<Purchasing> purchasingList = new ArrayList<>(buyTable.getItems());
             confirmPurchasing(purchasingList);
             buyTable.getItems().clear();
-            currentInvoiceNumber = generateInvoiceNumber();
             buyIdValue = Integer.valueOf(buyId);
             buyInvoiceNumber.setText(String.format("TRX-%05d", buyIdValue));
             calculateTotalPrice();

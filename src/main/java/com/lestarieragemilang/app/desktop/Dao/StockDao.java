@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.lestarieragemilang.app.desktop.Configurations.DatabaseConfiguration;
+import com.lestarieragemilang.app.desktop.Entities.Category;
 import com.lestarieragemilang.app.desktop.Entities.Stock;
 
 public class StockDao extends DatabaseConfiguration {
@@ -55,12 +56,14 @@ public class StockDao extends DatabaseConfiguration {
     }
 
     public void updateStock(Stock stock) {
-        String sql = "UPDATE stocks SET quantity = ?, purchase_price = ?, selling_price = ? WHERE stock_id = ?";
+        String sql = "UPDATE stocks SET stock_id = ?, category_id = ?, quantity = ?, purchase_price = ?, selling_price = ? WHERE stock_id = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, stock.getQuantity());
-            stmt.setString(2, stock.getPurchasePrice());
-            stmt.setString(3, stock.getPurchaseSell());
-            stmt.setInt(4, stock.getStockID());
+            stmt.setInt(1, stock.getStockID());
+            stmt.setInt(2, stock.getStockOnCategoryID());
+            stmt.setString(3, stock.getQuantity());
+            stmt.setString(4, stock.getPurchasePrice());
+            stmt.setString(5, stock.getPurchaseSell());
+            stmt.setInt(6, stock.getStockID());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -69,7 +72,7 @@ public class StockDao extends DatabaseConfiguration {
     }
 
     public void removeStock(int... stockIds) {
-        String[] tables = {"sales", "purchasing", "stocks"};
+        String[] tables = { "sales", "purchasing", "stocks" };
         for (int stockId : stockIds) {
             for (String table : tables) {
                 deleteRecordById(table, stockId);
@@ -146,28 +149,32 @@ public class StockDao extends DatabaseConfiguration {
         return stock;
     }
 
-    public List<Integer> getStockCategoryIds() {
-        List<Integer> categoryIds = new ArrayList<>();
-        String sql = "SELECT category_id FROM categories";
+    public List<Category> getStockCategories() {
+        List<Category> categories = new ArrayList<>();
+        String sql = "SELECT category_id, brand, product_type FROM categories";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    categoryIds.add(rs.getInt("category_id"));
+                    int categoryId = rs.getInt("category_id");
+                    String brand = rs.getString("brand");
+                    String productType = rs.getString("product_type");
+                    categories.add(new Category(categoryId, brand, productType));
+
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return categoryIds;
+        return categories;
     }
 
     public List<Stock> getStocksWithCategoryDetails() {
         List<Stock> stocks = new ArrayList<>();
         String sql = "SELECT s.stock_id, s.category_id, c.brand, c.product_type, c.size, c.weight, c.weight_unit, s.quantity as stok, s.purchase_price as hargaBeli, s.selling_price as hargaJual "
-                        +
-                        "FROM stocks s " +
-                        "INNER JOIN categories c ON s.category_id = c.category_id";
+                +
+                "FROM stocks s " +
+                "INNER JOIN categories c ON s.category_id = c.category_id";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             try (ResultSet rs = stmt.executeQuery()) {

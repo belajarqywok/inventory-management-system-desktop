@@ -48,7 +48,7 @@ public class StockForm {
     private StockTablePopulator stockTablePopulator = new StockTablePopulator();
 
     @FXML
-    JFXComboBox<Integer> categoryIDDropDown;
+    JFXComboBox<Object> categoryIDDropDown;
 
     private StockDao stockDao = new StockDao();
     private CategoryDao categoryDao = new CategoryDao();
@@ -58,17 +58,16 @@ public class StockForm {
         List<Category> categories = categoryDao.getAllCategories();
 
         Stock stock = new Stock(
-                gen.getId(), // id stok
-                categoryIDDropDown.getValue(), // id kategori
-                categories.get(0).getCategoryBrand(), // merek
-                categories.get(0).getCategoryType(), // jenis
-                categories.get(0).getCategorySize(), // ukuran
-                categories.get(0).getCategoryWeight(), // berat
-                categories.get(0).getCategoryUnit(), // satuan
-                stockQuantityField.getText(), // stok
-                stockBuyPriceField.getText(), // harga beli
-                stockSellPriceField.getText() // harga jual
-        );
+                gen.getId(),
+                (int) categoryIDDropDown.getValue(),
+                categories.get((int) categoryIDDropDown.getValue()).getCategoryBrand(),
+                categories.get((int) categoryIDDropDown.getValue()).getCategoryType(),
+                categories.get((int) categoryIDDropDown.getValue()).getCategorySize(),
+                categories.get((int) categoryIDDropDown.getValue()).getCategoryWeight(),
+                categories.get((int) categoryIDDropDown.getValue()).getCategoryUnit(),
+                stockQuantityField.getText(),
+                stockBuyPriceField.getText(),
+                stockSellPriceField.getText());
 
         stockDao.addStock(stock);
 
@@ -91,6 +90,9 @@ public class StockForm {
     @FXML
     void editStockButton(ActionEvent event) {
         Stock selectedStock = stockTable.getSelectionModel().getSelectedItem();
+        if (selectedStock != null) {
+            categoryIDDropDown.setValue(selectedStock);
+        }
 
         if (selectedStock != null) {
             if (editStockButtonText.getText().equals("KONFIRMASI")) {
@@ -101,8 +103,8 @@ public class StockForm {
                 alert.setContentText("Do you want to update the stock?");
 
                 Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.OK){
-                    
+                if (result.get() == ButtonType.OK) {
+
                     selectedStock.setQuantity(stockQuantityField.getText());
                     selectedStock.setPurchasePrice(stockBuyPriceField.getText());
                     selectedStock.setPurchaseSell(stockSellPriceField.getText());
@@ -122,7 +124,6 @@ public class StockForm {
                     successAlert.showAndWait();
                 }
             } else {
-                // Populate the fields with the selected stock's details
                 categoryIDDropDown.setValue(selectedStock.getStockOnCategoryID());
                 stockQuantityField.setText(selectedStock.getQuantity());
                 stockBuyPriceField.setText(selectedStock.getPurchasePrice());
@@ -215,11 +216,12 @@ public class StockForm {
         // populate stock table
         tablePopulator();
 
-        // populate category dropdown
-        ObservableList<Integer> stockList = FXCollections.observableArrayList(stockDao.getStockCategoryIds());
+        ObservableList<Object> stockList = FXCollections.observableArrayList(stockDao.getStockCategories());
         categoryIDDropDown.setItems(stockList);
+        if (!stockList.isEmpty()) {
+            categoryIDDropDown.getSelectionModel().selectFirst();
+        }
 
-        // search stock
         stockSearch();
     }
 }
