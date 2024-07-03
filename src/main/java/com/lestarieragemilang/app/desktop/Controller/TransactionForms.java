@@ -75,6 +75,7 @@ public class TransactionForms {
     private TabPane tabPane;
 
     private Integer buyIdValue;
+    private Integer sellIdValue;
 
     private BuyDaoImpl buyDao = new BuyDaoImpl();
     private SaleDaoImpl saleDao = new SaleDaoImpl();
@@ -447,14 +448,31 @@ public class TransactionForms {
         }
     }
 
+    private void printJasperSellList() throws MalformedURLException, URISyntaxException {
+        String path = "/com/lestarieragemilang/app/desktop/jasper/sales.jasper";
+        URL url = TransactionForms.class.getResource(path).toURI().toURL();
+        try {
+            JasperLoader loader = new JasperLoader();
+
+            loader.showJasperReportSell(
+                    url,
+                    sellIdValue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
-    private void confirmSellButton() {
+    private void confirmSellButton() throws MalformedURLException, URISyntaxException {
         List<Sales> salesList = new ArrayList<>(sellTable.getItems());
         confirmSales(salesList);
         sellTable.getItems().clear();
         currentInvoiceNumber = generateInvoiceNumber();
-        sellInvoiceNumber.setText(String.format("TRX-%05d", sellId));
+        sellIdValue = Integer.valueOf(sellId);
+        sellInvoiceNumber.setText(String.format("TRX-%05d", sellIdValue));
         calculateTotalPrice();
+
+        printJasperSellList();
     }
 
     @FXML

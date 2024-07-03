@@ -166,6 +166,26 @@ public class JasperLoader extends DatabaseConfiguration {
     }
   }
 
+  public void showJasperReportSell(URL location, Integer sellIdValue) {
+    try {
+      JasperReport jasperReport = (JasperReport) JRLoader.loadObject(location);
+      Map<String, Object> parameters = new HashMap<>();
+      parameters.put("invoiceSales", "%" + sellIdValue.toString() + "%");
+      JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, getConnection());
+
+      final JasperViewer viewer = new JasperViewer(jasperPrint, false);
+      Platform.runLater(() -> viewer.setVisible(true));
+
+    } catch (JRException e) {
+      LOGGER.log(Level.SEVERE, "Error loading Jasper Report", e);
+      Alert alert = new Alert(AlertType.ERROR);
+      alert.setTitle("Error");
+      alert.setHeaderText(null);
+      alert.setContentText(e.getMessage());
+      alert.showAndWait();
+    }
+  }
+
   public void showJasperReportSellList(URL location, String invoiceSales, Date firstDate, Date secondDate,
       MouseEvent event) {
     try {
