@@ -19,15 +19,16 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>22</version>
+            <version>23-ea+22</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-fxml -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>22</version>
+            <version>23-ea+22</version>
         </dependency>
+
 
         <!-- MySQL Connector -->
         <dependency>

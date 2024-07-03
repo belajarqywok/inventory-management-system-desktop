@@ -468,18 +468,18 @@ public class TransactionForms {
     @FXML
     private void resetSellButton() {
         sellDate.setValue(LocalDate.now());
-        currentInvoiceNumber = saleDao.generateInvoiceNumber();
-        sellInvoiceNumber.setText(String.valueOf(currentInvoiceNumber));
         sellStockIDDropdown.getSelectionModel().selectFirst();
-        sellBrandField.setText("");
-        sellTypeField.setText("");
-        sellPriceField.setText("");
-        customerIDDropDown.getSelectionModel().clearSelection();
-        customerNameField.setText("");
-        sellTotalField.setText("");
-        sellTotalPrice.setText("");
-        sellData.clear();
-        sellTable.setItems(sellData);
+        sellBrandField.clear();
+        sellTypeField.clear();
+        sellPriceField.clear();
+        customerIDDropDown.getSelectionModel().selectFirst();
+        customerNameField.clear();
+        sellTotalField.clear();
+        sellTotalPrice.clear();
+        editSellButtonText.setText("EDIT");
+
+        loadStockIDs();
+        loadIDs();
     }
 
     @FXML
@@ -542,7 +542,19 @@ public class TransactionForms {
 
     @FXML
     private void resetBuyButton() {
+        buyDate.setValue(LocalDate.now());
+        buyStockIDDropdown.getSelectionModel().selectFirst();
+        buyBrandField.clear();
+        buyTypeField.clear();
+        buyPriceField.clear();
+        supplierIDDropDown.getSelectionModel().selectFirst();
+        supplierNameField.clear();
+        buyTotalField.clear();
+        buyTotalPrice.clear();
+        editBuyButtonText.setText("EDIT");
 
+        loadStockIDs();
+        loadSupplierIDs();
     }
 
 }
