@@ -19,8 +19,12 @@ public class Report {
   }
 
   @FXML
-  public void setSceneReportTransaction(MouseEvent event) throws IOException {
-    Redirect.page("laporan-transaksi", setScene);
+  public void setSceneReportPurchasing(MouseEvent event) throws IOException {
+    Redirect.page("laporan-pembelian", setScene);
+  }
+  @FXML
+  public void setSceneReportSales(MouseEvent event) throws IOException {
+    Redirect.page("laporan-penjualan", setScene);
   }
 
   @FXML

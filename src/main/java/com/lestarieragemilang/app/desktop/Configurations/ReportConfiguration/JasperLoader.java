@@ -9,6 +9,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -107,6 +108,72 @@ public class JasperLoader extends DatabaseConfiguration {
       parameters.put("stock", "%" + stock + "%");
       parameters.put("purchasePriceStock", "%" + purchasePriceStock + "%");
       parameters.put("sellingPriceStock", "%" + sellingPriceStock + "%");
+      JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, getConnection());
+
+      final JasperViewer viewer = new JasperViewer(jasperPrint, false);
+      Platform.runLater(() -> viewer.setVisible(true));
+
+    } catch (JRException e) {
+      LOGGER.log(Level.SEVERE, "Error loading Jasper Report", e);
+      Alert alert = new Alert(AlertType.ERROR);
+      alert.setTitle("Error");
+      alert.setHeaderText(null);
+      alert.setContentText(e.getMessage());
+      alert.showAndWait();
+    }
+  }
+
+  public void showJasperReportBuyList(URL location, String invoicePurchasing, Date firstDate, Date secondDate,
+      MouseEvent event) {
+    try {
+      JasperReport jasperReport = (JasperReport) JRLoader.loadObject(location);
+      Map<String, Object> parameters = new HashMap<>();
+      parameters.put("invoicePurchasing", "%" + invoicePurchasing + "%");
+      parameters.put("firstDate", firstDate);
+      parameters.put("secondDate", secondDate);
+      JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, getConnection());
+
+      final JasperViewer viewer = new JasperViewer(jasperPrint, false);
+      Platform.runLater(() -> viewer.setVisible(true));
+
+    } catch (JRException e) {
+      LOGGER.log(Level.SEVERE, "Error loading Jasper Report", e);
+      Alert alert = new Alert(AlertType.ERROR);
+      alert.setTitle("Error");
+      alert.setHeaderText(null);
+      alert.setContentText(e.getMessage());
+      alert.showAndWait();
+    }
+  }
+
+  public void showJasperReportBuy(URL location, Integer buyIdValue) {
+    try {
+      JasperReport jasperReport = (JasperReport) JRLoader.loadObject(location);
+      Map<String, Object> parameters = new HashMap<>();
+      parameters.put("invoicePurchasing", "%" + buyIdValue.toString() + "%");
+      JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, getConnection());
+
+      final JasperViewer viewer = new JasperViewer(jasperPrint, false);
+      Platform.runLater(() -> viewer.setVisible(true));
+
+    } catch (JRException e) {
+      LOGGER.log(Level.SEVERE, "Error loading Jasper Report", e);
+      Alert alert = new Alert(AlertType.ERROR);
+      alert.setTitle("Error");
+      alert.setHeaderText(null);
+      alert.setContentText(e.getMessage());
+      alert.showAndWait();
+    }
+  }
+
+  public void showJasperReportSellList(URL location, String invoiceSales, Date firstDate, Date secondDate,
+      MouseEvent event) {
+    try {
+      JasperReport jasperReport = (JasperReport) JRLoader.loadObject(location);
+      Map<String, Object> parameters = new HashMap<String, Object>();
+      parameters.put("invoiceSales", "%" + invoiceSales + "%");
+      parameters.put("firstDate", firstDate);
+      parameters.put("secondDate", secondDate);
       JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, getConnection());
 
       final JasperViewer viewer = new JasperViewer(jasperPrint, false);

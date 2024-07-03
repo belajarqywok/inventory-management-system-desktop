@@ -6,9 +6,14 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.lestarieragemilang.app.desktop.Configurations.ReportConfiguration.JasperLoader;
 import com.lestarieragemilang.app.desktop.Dao.Transactions.Implement.BuyDaoImpl;
 import com.lestarieragemilang.app.desktop.Dao.Transactions.Implement.SaleDaoImpl;
 import com.lestarieragemilang.app.desktop.Entities.Transactions.Invoice;
@@ -62,6 +67,8 @@ public class TransactionForms {
 
     @FXML
     private TabPane tabPane;
+
+    private Integer buyIdValue;
 
     private BuyDaoImpl buyDao = new BuyDaoImpl();
     private SaleDaoImpl saleDao = new SaleDaoImpl();
@@ -447,15 +454,32 @@ public class TransactionForms {
         sellTable.setItems(sellData);
     }
 
+    private void printJasperBuyList() throws MalformedURLException, URISyntaxException {
+        String path = "/com/lestarieragemilang/app/desktop/jasper/purchasing.jasper";
+        URL url = TransactionForms.class.getResource(path).toURI().toURL();
+        try {
+            JasperLoader loader = new JasperLoader();
+
+            loader.showJasperReportBuy(
+                    url,
+                    buyIdValue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
-    private void confirmBuyButton() {
+    private void confirmBuyButton() throws MalformedURLException, URISyntaxException {
         if (tabPane.getSelectionModel().getSelectedIndex() == 0) {
             List<Purchasing> purchasingList = new ArrayList<>(buyTable.getItems());
             confirmPurchasing(purchasingList);
             buyTable.getItems().clear();
             currentInvoiceNumber = generateInvoiceNumber();
-            buyInvoiceNumber.setText(String.format("TRX-%05d", buyId));
+            buyIdValue = Integer.valueOf(buyId);
+            buyInvoiceNumber.setText(String.format("TRX-%05d", buyIdValue));
             calculateTotalPrice();
+
+            printJasperBuyList();
         }
     }
 

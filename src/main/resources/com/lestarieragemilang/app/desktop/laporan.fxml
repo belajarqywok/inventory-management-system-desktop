@@ -15,7 +15,6 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox maxHeight="570.0" maxWidth="970.0" prefHeight="570.0" prefWidth="970.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lestarieragemilang.app.desktop.Controller.Report">
    <children>
       <BorderPane fx:id="bp" prefHeight="570.0">
@@ -24,7 +23,7 @@
                <content>
                   <AnchorPane fx:id="setScene" prefHeight="570.0" prefWidth="970.0" style="-fx-background-color: #f5f5f5;">
                      <children>
-                        <GridPane hgap="20.0" layoutX="20.0" layoutY="20.0" prefHeight="570.0" vgap="20.0">
+                        <GridPane hgap="20.0" layoutX="20.0" layoutY="20.0" prefHeight="570.0" vgap="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="20.0">
                            <children>
                               <VBox alignment="CENTER" spacing="10.0">
                                  <children>
@@ -43,7 +42,7 @@
                                           </DropShadow>
                                        </effect>
                                     </Label>
-                                    <JFXButton buttonType="RAISED" onMouseClicked="#setSceneReportStock" prefHeight="150.0" prefWidth="230.0" style="-fx-background-color: #333; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 10; -fx-font-size: 20; -fx-cursor: hand;" text="Laporan Stok Besi" textAlignment="CENTER">
+                                    <JFXButton buttonType="RAISED" onMouseClicked="#setSceneReportStock" prefHeight="100.0" prefWidth="230.0" style="-fx-background-color: #333; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 10; -fx-font-size: 20; -fx-cursor: hand;" text="Laporan Stok Besi" textAlignment="CENTER">
                                        <font>
                                           <Font name="Calibri Bold" size="10.0" />
                                        </font>
@@ -75,7 +74,7 @@
                                           </DropShadow>
                                        </effect>
                                     </Label>
-                                    <JFXButton buttonType="RAISED" onMouseClicked="#setSceneReportCategory" prefHeight="150.0" prefWidth="230.0" style="-fx-background-color: #333; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 10; -fx-font-size: 20; -fx-cursor: hand;" text="Laporan Kategori" textAlignment="CENTER">
+                                    <JFXButton buttonType="RAISED" onMouseClicked="#setSceneReportCategory" prefHeight="100.0" prefWidth="230.0" style="-fx-background-color: #333; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 10; -fx-font-size: 20; -fx-cursor: hand;" text="Laporan Kategori" textAlignment="CENTER">
                                        <font>
                                           <Font name="Calibri Bold" size="10.0" />
                                        </font>
@@ -107,7 +106,7 @@
                                           </DropShadow>
                                        </effect>
                                     </Label>
-                                    <JFXButton buttonType="RAISED" onMouseClicked="#setSceneReportTransaction" prefHeight="150.0" prefWidth="230.0" style="-fx-background-color: #333; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 10; -fx-font-size: 20; -fx-cursor: hand;" text="Laporan Transaksi" textAlignment="CENTER">
+                                    <JFXButton buttonType="RAISED" onMouseClicked="#setSceneReportPurchasing" prefHeight="100.0" prefWidth="230.0" style="-fx-background-color: #333; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 10; -fx-font-size: 20; -fx-cursor: hand;" text="Laporan Pembelian" textAlignment="CENTER">
                                        <font>
                                           <Font name="Calibri Bold" size="10.0" />
                                        </font>
@@ -139,7 +138,7 @@
                                           </DropShadow>
                                        </effect>
                                     </Label>
-                                    <JFXButton buttonType="RAISED" onMouseClicked="#setSceneReportSupplier" prefHeight="150.0" prefWidth="230.0" style="-fx-background-color: #333; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 10; -fx-font-size: 20; -fx-cursor: hand;" text="Laporan Supplier" textAlignment="CENTER">
+                                    <JFXButton buttonType="RAISED" onMouseClicked="#setSceneReportSupplier" prefHeight="100.0" prefWidth="230.0" style="-fx-background-color: #333; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 10; -fx-font-size: 20; -fx-cursor: hand;" text="Laporan Supplier" textAlignment="CENTER">
                                        <font>
                                           <Font name="Calibri Bold" size="10.0" />
                                        </font>
@@ -171,7 +170,7 @@
                                           </DropShadow>
                                        </effect>
                                     </Label>
-                                    <JFXButton buttonType="RAISED" onMouseClicked="#setSceneReportCustomer" prefHeight="150.0" prefWidth="230.0" style="-fx-background-color: #333; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 10; -fx-font-size: 20; -fx-cursor: hand;" text="Laporan Pelanggan" textAlignment="CENTER">
+                                    <JFXButton buttonType="RAISED" onMouseClicked="#setSceneReportCustomer" prefHeight="100.0" prefWidth="230.0" style="-fx-background-color: #333; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 10; -fx-font-size: 20; -fx-cursor: hand;" text="Laporan Pelanggan" textAlignment="CENTER">
                                        <font>
                                           <Font name="Calibri Bold" size="10.0" />
                                        </font>
@@ -181,6 +180,36 @@
                                                 <Color red="0.0" green="0.0" blue="0.0" opacity="0.2" />
                                              </color>
                                              <radius>5.0</radius>
+                                          </DropShadow>
+                                       </effect>
+                                    </JFXButton>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                 <children>
+                                    <ImageView fitHeight="100.0" fitWidth="100.0">
+                                       <image>
+                                          <Image url="@Assets/Images/money_.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Transaksi">
+                                       <effect>
+                                          <DropShadow radius="5.0">
+                                             <color>
+                                                <Color red="0.0" green="0.0" blue="0.0" opacity="0.2" />
+                                             </color>
+                                          </DropShadow>
+                                       </effect>
+                                    </Label>
+                                    <JFXButton buttonType="RAISED" onMouseClicked="#setSceneReportSales" prefHeight="100.0" prefWidth="230.0" style="-fx-background-color: #333; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 10; -fx-font-size: 20; -fx-cursor: hand;" text="Laporan Penjualan" textAlignment="CENTER">
+                                       <font>
+                                          <Font name="Calibri Bold" size="10.0" />
+                                       </font>
+                                       <effect>
+                                          <DropShadow radius="5.0">
+                                             <color>
+                                                <Color red="0.0" green="0.0" blue="0.0" opacity="0.2" />
+                                             </color>
                                           </DropShadow>
                                        </effect>
                                     </JFXButton>

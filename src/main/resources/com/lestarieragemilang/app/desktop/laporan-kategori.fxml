@@ -13,12 +13,7 @@
    <children>
       <AnchorPane prefHeight="573.0" prefWidth="970.0">
          <children>
-            <TextField fx:id="categorySearchField" layoutX="323.0" layoutY="216.0" prefHeight="32.0" prefWidth="250.0" style="-fx-background-radius: 5;" />
-            <JFXButton buttonType="RAISED" layoutX="587.0" layoutY="217.0" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND;" text="CARI" textFill="WHITE">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </JFXButton>
+            <TextField fx:id="categorySearchField" layoutX="360.0" layoutY="216.0" prefHeight="32.0" prefWidth="250.0" style="-fx-background-radius: 5;" />
             <JFXButton buttonType="RAISED" layoutX="850.0" layoutY="217.0" onMouseClicked="#printJasperCategory" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND;" text="PRINT DATA" textFill="WHITE">
                <font>
                   <Font size="14.0" />
