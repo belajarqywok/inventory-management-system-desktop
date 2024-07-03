@@ -58,7 +58,7 @@ public class StockForm {
         List<Category> categories = categoryDao.getAllCategories();
 
         Stock stock = new Stock(
-                gen.generateRandomId(), // id stok
+                gen.getId(), // id stok
                 categoryIDDropDown.getValue(), // id kategori
                 categories.get(0).getCategoryBrand(), // merek
                 categories.get(0).getCategoryType(), // jenis

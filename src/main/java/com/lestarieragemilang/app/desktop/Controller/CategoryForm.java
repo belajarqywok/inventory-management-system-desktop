@@ -52,7 +52,7 @@ public class CategoryForm {
 
     @FXML
     void addCategoryButton(ActionEvent event) {
-        Category category = new Category(gen.generateRandomId(), categoryBrandDropDown.getValue(),
+        Category category = new Category(gen.getId(), categoryBrandDropDown.getValue(),
                 categoryTypeDropDown.getValue(), categorySizeDropDown.getValue(), categoryWeightDropDown.getValue(),
                 categoryUnitDropDown.getValue());
         CategoryDao categoryDao = new CategoryDao();

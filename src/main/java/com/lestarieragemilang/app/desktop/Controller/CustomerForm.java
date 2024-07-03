@@ -47,7 +47,7 @@ public class CustomerForm {
 
     @FXML
     void addCustomerButton(ActionEvent event) {
-        Customer customer = new Customer(gen.generateRandomId(), customerNameField.getText(),
+        Customer customer = new Customer(gen.getId(), customerNameField.getText(),
                 customerAddressField.getText(),
                 customerContactField.getText(), customerEmailField.getText());
 

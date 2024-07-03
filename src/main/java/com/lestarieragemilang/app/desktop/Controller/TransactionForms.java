@@ -5,19 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import com.lestarieragemilang.app.desktop.Configurations.DatabaseConfiguration;
 import com.lestarieragemilang.app.desktop.Dao.Transactions.Implement.BuyDaoImpl;
 import com.lestarieragemilang.app.desktop.Dao.Transactions.Implement.SaleDaoImpl;
 import com.lestarieragemilang.app.desktop.Entities.Transactions.Invoice;
@@ -29,7 +20,7 @@ import com.lestarieragemilang.app.desktop.Utilities.SellTablePopulator;
 
 public class TransactionForms {
 
-    private int currentInvoiceNumber;
+    private int currentInvoiceNumber = 0;;
     @FXML
     private DatePicker buyDate, sellDate;
     @FXML
@@ -65,6 +56,10 @@ public class TransactionForms {
     @FXML
     private TableColumn<Sales, BigDecimal> sellPriceCol, sellSubTotalCol;
 
+    GenerateRandomID generateRandomID = new GenerateRandomID();
+    int buyId = generateRandomID.getId();
+    int sellId = generateRandomID.getId();
+
     @FXML
     private TabPane tabPane;
 
@@ -88,10 +83,8 @@ public class TransactionForms {
     @FXML
     private void initialize() {
 
-        GenerateRandomID generateRandomID = new GenerateRandomID();
-
-        buyInvoiceNumber.setText(String.valueOf(generateRandomID));
-        sellInvoiceNumber.setText(String.valueOf(generateRandomID));
+        sellInvoiceNumber.setText(String.format("TRX-%05d", sellId));
+        buyInvoiceNumber.setText(String.format("TRX-%05d", buyId));
 
         tablePopulator();
 
@@ -159,18 +152,18 @@ public class TransactionForms {
             buyStockIDDropdown.getSelectionModel().selectFirst();
             String firstStockId = stockIds.get(0).toString();
             List<String> firstStockDetails = buyDao.getBrandTypePrice(firstStockId);
-            buyBrandField.setText(firstStockDetails.get(0)); // Assuming the brand is the first item in the list
-            buyTypeField.setText(firstStockDetails.get(1)); // Assuming the type is the second item in the list
-            buyPriceField.setText(firstStockDetails.get(2)); // Assuming the price is the third item in the list
+            buyBrandField.setText(firstStockDetails.get(0));
+            buyTypeField.setText(firstStockDetails.get(1));
+            buyPriceField.setText(firstStockDetails.get(2));
         }
 
         buyStockIDDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 String stockId = newValue.toString();
                 List<String> stockDetails = buyDao.getBrandTypePrice(stockId);
-                buyBrandField.setText(stockDetails.get(0)); // Assuming the brand is the first item in the list
-                buyTypeField.setText(stockDetails.get(1)); // Assuming the type is the second item in the list
-                buyPriceField.setText(stockDetails.get(2)); // Assuming the price is the third item in the list
+                buyBrandField.setText(stockDetails.get(0));
+                buyTypeField.setText(stockDetails.get(1));
+                buyPriceField.setText(stockDetails.get(2));
             }
         });
     }
@@ -195,7 +188,6 @@ public class TransactionForms {
     }
 
     private void loadIDs() {
-        // Load stock IDs for buying transactions
         ObservableList<Object> buyStockIds = FXCollections.observableArrayList(buyDao.getAllStockIds());
         buyStockIDDropdown.setItems(buyStockIds);
         if (!buyStockIds.isEmpty()) {
@@ -217,7 +209,6 @@ public class TransactionForms {
             }
         });
 
-        // Load stock IDs for selling transactions
         ObservableList<Integer> sellStockIds = FXCollections.observableArrayList(saleDao.getAllStockIds());
         sellStockIDDropdown.setItems(sellStockIds);
         if (!sellStockIds.isEmpty()) {
@@ -239,7 +230,6 @@ public class TransactionForms {
             }
         });
 
-        // Load supplier IDs for buying transactions
         ObservableList<Object> supplierIds = FXCollections.observableArrayList(buyDao.getSupplierIds());
         supplierIDDropDown.setItems(supplierIds);
         if (!supplierIds.isEmpty()) {
@@ -257,7 +247,6 @@ public class TransactionForms {
             }
         });
 
-        // Load customer IDs for selling transactions
         ObservableList<Integer> customerIds = FXCollections.observableArrayList(saleDao.getCustomerIds());
         customerIDDropDown.setItems(customerIds);
         if (!customerIds.isEmpty()) {
@@ -281,12 +270,11 @@ public class TransactionForms {
         if (tabPane.getSelectionModel().getSelectedIndex() == 0) {
             Purchasing purchasing = new Purchasing();
 
-            // Initialize the Invoice object if it's null
             if (purchasing.getInvoice() == null) {
                 purchasing.setInvoice(new Invoice());
             }
 
-            purchasing.getInvoice().setInvoiceNumber(currentInvoiceNumber);
+            purchasing.getInvoice().setInvoiceNumber(generateInvoiceNumber());
             purchasing.getInvoice().setInvoiceDate(buyDate.getValue());
             purchasing.setStockId((int) buyStockIDDropdown.getValue());
             purchasing.setBrand(buyBrandField.getText());
@@ -307,12 +295,11 @@ public class TransactionForms {
     private void addSellButton() {
         Sales sales = new Sales();
 
-        // Initialize the Invoice object if it's null
         if (sales.getInvoice() == null) {
             sales.setInvoice(new Invoice());
         }
 
-        sales.setInvoice(new Invoice());
+        sales.getInvoice().setInvoiceNumber(generateInvoiceNumber());
         sales.getInvoice().setInvoiceDate(sellDate.getValue());
         sales.setStockId((int) sellStockIDDropdown.getValue());
         sales.setBrand(sellBrandField.getText());
@@ -323,6 +310,7 @@ public class TransactionForms {
         sales.setQuantity(Integer.parseInt(sellTotalField.getText()));
         sales.setSubTotal(sales.getPrice().multiply(BigDecimal.valueOf(sales.getQuantity())));
         sales.setPriceTotal(sales.getSubTotal());
+
         sellTable.getItems().add(sales);
         calculateTotalPrice();
     }
@@ -331,7 +319,6 @@ public class TransactionForms {
     private void editBuyButton() {
         Purchasing selectedPurchasing = buyTable.getSelectionModel().getSelectedItem();
         if (selectedPurchasing != null) {
-            // Populate the form fields with the data from the selected item
             buyDate.setValue(selectedPurchasing.getInvoice().getInvoiceDate());
             buyStockIDDropdown.setValue(selectedPurchasing.getStockId());
             buyBrandField.setText(selectedPurchasing.getBrand());
@@ -341,10 +328,6 @@ public class TransactionForms {
             supplierNameField.setText(selectedPurchasing.getSupplierName());
             buyTotalField.setText(String.valueOf(selectedPurchasing.getQuantity()));
 
-            // Allow the user to modify the data in the form fields
-
-            // When the user clicks the save button, update the data in the database
-            // with the new values from the form fields
             selectedPurchasing.getInvoice().setInvoiceDate(buyDate.getValue());
             selectedPurchasing.setStockId((int) buyStockIDDropdown.getValue());
             selectedPurchasing.setBrand(buyBrandField.getText());
@@ -360,7 +343,6 @@ public class TransactionForms {
             buyDao.updatePurchasing(selectedPurchasing);
             loadBuyData();
         } else {
-            // Show an error message if no item is selected
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
@@ -382,7 +364,6 @@ public class TransactionForms {
     private void editSellButton() {
         Sales selectedSales = sellTable.getSelectionModel().getSelectedItem();
         if (selectedSales != null) {
-            // Populate the form fields with the data from the selected item
             sellDate.setValue(selectedSales.getInvoice().getInvoiceDate());
             sellStockIDDropdown.setValue(selectedSales.getStockId());
             sellBrandField.setText(selectedSales.getBrand());
@@ -392,10 +373,6 @@ public class TransactionForms {
             customerNameField.setText(selectedSales.getCustomerName());
             sellTotalField.setText(String.valueOf(selectedSales.getQuantity()));
 
-            // Allow the user to modify the data in the form fields
-
-            // When the user clicks the save button, update the data in the database
-            // with the new values from the form fields
             selectedSales.getInvoice().setInvoiceDate(sellDate.getValue());
             selectedSales.setStockId((int) sellStockIDDropdown.getValue());
             selectedSales.setBrand(sellBrandField.getText());
@@ -411,7 +388,6 @@ public class TransactionForms {
             saleDao.updateSales(selectedSales);
             loadSellData();
         } else {
-            // Show an error message if no item is selected
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
@@ -422,23 +398,10 @@ public class TransactionForms {
 
     @FXML
     private void removeSellButton() {
-        Sales selectedSales = sellTable.getSelectionModel().getSelectedItem();
-        if (selectedSales != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmation");
-            alert.setHeaderText(null);
-            alert.setContentText("Are you sure you want to remove this sales item?");
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK) {
-                sellTable.getItems().remove(selectedSales);
-                calculateSellTotalPrice();
-            }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
-            alert.setHeaderText(null);
-            alert.setContentText("Please select a sales item to remove.");
-            alert.showAndWait();
+        Sales sales = sellTable.getSelectionModel().getSelectedItem();
+        if (sales != null) {
+            saleDao.deleteSales(sales.getInvoice().getInvoiceNumber());
+            loadSellData();
         }
     }
 
@@ -448,7 +411,7 @@ public class TransactionForms {
         confirmSales(salesList);
         sellTable.getItems().clear();
         currentInvoiceNumber = generateInvoiceNumber();
-        sellInvoiceNumber.setText(String.valueOf(currentInvoiceNumber));
+        sellInvoiceNumber.setText(String.format("TRX-%05d", sellId));
         calculateTotalPrice();
     }
 
@@ -464,7 +427,6 @@ public class TransactionForms {
     @FXML
     private void searchDataSellAction() {
         FilteredList<Sales> filteredData = new FilteredList<>(sellData);
-        // Implement the logic to filter the sales data based on the search query
         sellTable.setItems(filteredData);
     }
 
@@ -492,26 +454,18 @@ public class TransactionForms {
             confirmPurchasing(purchasingList);
             buyTable.getItems().clear();
             currentInvoiceNumber = generateInvoiceNumber();
-            buyInvoiceNumber.setText(String.valueOf(currentInvoiceNumber));
-        } else {
-            List<Sales> salesList = new ArrayList<>(sellTable.getItems());
-            confirmSales(salesList);
-            sellTable.getItems().clear();
-            currentInvoiceNumber = generateInvoiceNumber();
-            sellInvoiceNumber.setText(String.valueOf(currentInvoiceNumber));
+            buyInvoiceNumber.setText(String.format("TRX-%05d", buyId));
+            calculateTotalPrice();
         }
-        calculateTotalPrice();
     }
 
     private void calculateTotalPrice() {
         BigDecimal total = BigDecimal.ZERO;
         if (tabPane.getSelectionModel().getSelectedIndex() == 0) {
-            // Calculate total price for purchasing data
             for (Purchasing purchasing : buyTable.getItems()) {
                 total = total.add(purchasing.getSubTotal());
             }
         } else {
-            // Calculate total price for sales data
             for (Sales sales : sellTable.getItems()) {
                 total = total.add(sales.getSubTotal());
             }
@@ -532,19 +486,7 @@ public class TransactionForms {
     }
 
     private int generateInvoiceNumber() {
-        String sql = "SELECT MAX(invoice_number) FROM purchasing";
-
-        try (Connection conn = DatabaseConfiguration.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                return rs.getInt(1) + 1;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return 1;
+        return generateRandomID.getId();
     }
 
     @FXML
@@ -558,14 +500,9 @@ public class TransactionForms {
         buyTotalPrice.setText(total.toString());
     }
 
-    // calculateSellTotalPrice
-
     @FXML
     private void searchDataBuyAction() {
-        // Purchasing purchasing = buyDao.searchDataBuy(buyStockIDDropdown.getValue());
-        // buyBrandField.setText(purchasing.getBrand());
-        // buyTypeField.setText(purchasing.getProductType());
-        // buyPriceField.setText(purchasing.getPrice().toString());
+
     }
 
     @FXML
