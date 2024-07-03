@@ -141,7 +141,7 @@ public class SupplierForm {
             JOptionPane.showMessageDialog(null, "Deletion cancelled.");
         }
 
-    }
+    } 
 
     void supplierSearch() {
         FilteredList<Supplier> filteredData = new FilteredList<>(supplierTable.getItems());
