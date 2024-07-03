@@ -1,6 +1,7 @@
 package com.lestarieragemilang.app.desktop.Dao.Transactions.Implement;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +15,17 @@ public class SaleDaoImpl extends DatabaseConfiguration implements SaleDao {
 
     @Override
     public void addSales(Sales sales) {
-        String sql = "INSERT INTO sales (sale_date, invoice_number, stock_id, brand, product_type, price, sub_total, price_total, customer_id, customer_name, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+        String sql = "INSERT INTO sales (invoice_number, sale_date, stock_id, brand, product_type, price, sub_total, price_total, customer_id, customer_name, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
         try (Connection conn = DatabaseConfiguration.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            // stmt.setDate(1, new java.sql.Date(sales.getInvoice().getInvoiceDate().getTime()));
-            stmt.setInt(2, sales.getInvoice().getInvoiceNumber());
+    
+            LocalDate invoiceDate = sales.getInvoice().getInvoiceDate();
+            if (invoiceDate == null) {
+                invoiceDate = LocalDate.now(); // Default to current date if not set
+            }
+            stmt.setInt(1, sales.getInvoice().getInvoiceNumber()); // Set invoice_number
+            stmt.setDate(2, java.sql.Date.valueOf(invoiceDate));
             stmt.setInt(3, sales.getStockId());
             stmt.setString(4, sales.getBrand());
             stmt.setString(5, sales.getProductType());
@@ -29,20 +35,21 @@ public class SaleDaoImpl extends DatabaseConfiguration implements SaleDao {
             stmt.setInt(9, sales.getCustomerId());
             stmt.setString(10, sales.getCustomerName());
             stmt.setInt(11, sales.getQuantity());
-
+    
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
+    
     @Override
     public void updateSales(Sales sales) {
         String sql = "UPDATE sales SET sale_date=?, stock_id=?, brand=?, product_type=?, price=?, sub_total=?, price_total=?, customer_id=?, customer_name=?, quantity=? WHERE invoice_number=?";
 
         try (Connection conn = DatabaseConfiguration.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            // stmt.setDate(1, new java.sql.Date(sales.getInvoice().getInvoiceDate().getTime()));
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            // stmt.setDate(1, new
+            // java.sql.Date(sales.getInvoice().getInvoiceDate().getTime()));
             stmt.setInt(2, sales.getStockId());
             stmt.setString(3, sales.getBrand());
             stmt.setString(4, sales.getProductType());
@@ -65,7 +72,7 @@ public class SaleDaoImpl extends DatabaseConfiguration implements SaleDao {
         String sql = "DELETE FROM sales WHERE invoice_number=?";
 
         try (Connection conn = DatabaseConfiguration.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             stmt.executeUpdate();
@@ -79,13 +86,13 @@ public class SaleDaoImpl extends DatabaseConfiguration implements SaleDao {
         String sql = "SELECT * FROM sales WHERE invoice_number=?";
 
         try (Connection conn = DatabaseConfiguration.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Invoice invoice = new Invoice();
-                    
+
                     Sales sales = new Sales();
                     sales.setInvoice(invoice);
                     sales.setStockId(rs.getInt("stock_id"));
@@ -115,8 +122,8 @@ public class SaleDaoImpl extends DatabaseConfiguration implements SaleDao {
         List<Sales> salesList = new ArrayList<>();
 
         try (Connection conn = DatabaseConfiguration.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Invoice invoice = new Invoice();
                 invoice.setInvoiceNumber(rs.getInt("invoice_number"));
@@ -154,12 +161,12 @@ public class SaleDaoImpl extends DatabaseConfiguration implements SaleDao {
         }
     }
 
-    private int generateInvoiceNumber() {
+    public int generateInvoiceNumber() {
         String sql = "SELECT MAX(invoice_number) FROM sales";
 
         try (Connection conn = DatabaseConfiguration.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1) + 1;
             }
@@ -170,82 +177,81 @@ public class SaleDaoImpl extends DatabaseConfiguration implements SaleDao {
         return 1;
     }
 
-public List<Integer> getAllStockIds() {
-    String sql = "SELECT stock_id FROM stocks";
+    public List<Integer> getAllStockIds() {
+        String sql = "SELECT stock_id FROM stocks";
 
-    List<Integer> stockIds = new ArrayList<>();
+        List<Integer> stockIds = new ArrayList<>();
 
-    try (Connection conn = DatabaseConfiguration.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql);
-         ResultSet rs = stmt.executeQuery()) {
-        while (rs.next()) {
-            stockIds.add(rs.getInt("stock_id"));
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return stockIds;
-}
-
-public List<String> getBrandTypePrice(int stockId) {
-    String sql = "SELECT brand, product_type, price FROM stocks WHERE stock_id=?";
-
-    List<String> stockDetails = new ArrayList<>();
-
-    try (Connection conn = DatabaseConfiguration.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, stockId);
-
-        try (ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                stockDetails.add(rs.getString("brand"));
-                stockDetails.add(rs.getString("product_type"));
-                stockDetails.add(rs.getBigDecimal("price").toString());
+        try (Connection conn = DatabaseConfiguration.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                stockIds.add(rs.getInt("stock_id"));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return stockIds;
     }
 
-    return stockDetails;
-}
+    public List<String> getBrandTypePrice(int stockId) {
+        String sql = "SELECT c.brand, c.product_type, s.selling_price FROM stocks s JOIN categories c ON s.category_id = c.category_id WHERE s.stock_id = ?";
 
-public List<Integer> getCustomerIds() {
-    String sql = "SELECT customer_id FROM customers";
+        List<String> stockDetails = new ArrayList<>();
 
-    List<Integer> customerIds = new ArrayList<>();
+        try (Connection conn = DatabaseConfiguration.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, stockId);
 
-    try (Connection conn = DatabaseConfiguration.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql);
-         ResultSet rs = stmt.executeQuery()) {
-        while (rs.next()) {
-            customerIds.add(rs.getInt("customer_id"));
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return customerIds;
-}
-
-public String getCustomerName(int customerId) {
-    String sql = "SELECT customer_name FROM customers WHERE customer_id=?";
-
-    try (Connection conn = DatabaseConfiguration.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, customerId);
-
-        try (ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                return rs.getString("customer_name");
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    stockDetails.add(rs.getString("brand"));
+                    stockDetails.add(rs.getString("product_type"));
+                    stockDetails.add(rs.getBigDecimal("selling_price").toString());
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return stockDetails;
     }
 
-    return null;
-}
+    public List<Integer> getCustomerIds() {
+        String sql = "SELECT customer_id FROM customers";
+
+        List<Integer> customerIds = new ArrayList<>();
+
+        try (Connection conn = DatabaseConfiguration.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                customerIds.add(rs.getInt("customer_id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return customerIds;
+    }
+
+    public String getCustomerName(int customerId) {
+        String name = "";
+        String sql = "SELECT customer_name FROM customers WHERE customer_id=?";
+        try (Connection conn = DatabaseConfiguration.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, customerId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    name = rs.getString("customer_name");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return name;
+    }
 
 }

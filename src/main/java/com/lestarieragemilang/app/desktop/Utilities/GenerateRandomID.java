@@ -1,17 +1,16 @@
 package com.lestarieragemilang.app.desktop.Utilities;
 
-import java.time.LocalDate;
 import java.util.Random;
 
 public class GenerateRandomID {
-    public int generateRandomId() {
+    private int id;
+
+    public GenerateRandomID() {
         Random random = new Random();
-        return random.nextInt(1000);
-        
+        id = random.nextInt(1000);
     }
 
-    public LocalDate generateTransactionId() {
-        
-        throw new UnsupportedOperationException("Unimplemented method 'generateTransactionId'");
+    public int getId() {
+        return id;
     }
 }

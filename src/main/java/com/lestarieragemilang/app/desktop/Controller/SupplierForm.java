@@ -50,7 +50,7 @@ public class SupplierForm {
 
     @FXML
     void addSupplierButton(ActionEvent event) {
-        Supplier supplier = new Supplier(gen.generateRandomId(), supplierNameField.getText(),
+        Supplier supplier = new Supplier(gen.getId(), supplierNameField.getText(),
                 supplierAddressField.getText(),
                 supplierContactField.getText(), supplierEmailField.getText());
 

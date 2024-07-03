@@ -54,7 +54,6 @@
                                                    </font>
                                                 </Label>
                                                 <TextField fx:id="buyTotalPrice" disable="true" prefHeight="30.0" style="-fx-background-radius: 7;" />
-                                                <JFXButton buttonType="RAISED" onAction="#calculateBuyTotalPrice" prefHeight="30.0" prefWidth="108.0" style="-fx-background-color: #131313; -fx-text-fill: #E8E7DE; -fx-background-radius: 10; -fx-font-weight: bold; -fx-border-radius: 10; -fx-cursor: hand;" text="KALKULASI" />
                                              </children>
                                           </HBox>
                                           <JFXButton buttonType="RAISED" layoutX="826.0" layoutY="215.0" onAction="#confirmBuyButton" prefHeight="30.0" prefWidth="125.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND; -fx-text-fill: #E8E7DE; -fx-font-weight: bold; -fx-border-radius: 10;" text="KONFIRMASI" textFill="WHITE" AnchorPane.bottomAnchor="15.0">
@@ -286,10 +285,9 @@
                                                    </font>
                                                 </Label>
                                                 <TextField fx:id="sellTotalPrice" disable="true" style="-fx-background-radius: 7;" />
-                                                <JFXButton buttonType="RAISED" onAction="#calculateSellTotalPrice" prefHeight="30.0" prefWidth="108.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-border-radius: 10; -fx-font-weight: bold; -fx-cursor: hand; -fx-text-fill: #E8E7DE;" text="KALKULASI" />
                                              </children>
                                           </HBox>
-                                          <JFXButton buttonType="RAISED" layoutX="826.0" layoutY="193.0" prefHeight="30.0" prefWidth="124.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND; -fx-text-fill: #E8E7DE; -fx-border-radius: 10; -fx-font-weight: bold;" text="KONFIRMASI" textFill="WHITE" AnchorPane.bottomAnchor="15.0">
+                                          <JFXButton buttonType="RAISED" layoutX="826.0" layoutY="193.0" onAction="#confirmSellButton" prefHeight="30.0" prefWidth="124.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND; -fx-text-fill: #E8E7DE; -fx-border-radius: 10; -fx-font-weight: bold;" text="KONFIRMASI" textFill="WHITE" AnchorPane.bottomAnchor="15.0">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>

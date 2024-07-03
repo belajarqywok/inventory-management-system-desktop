@@ -1,6 +1,7 @@
 package com.lestarieragemilang.app.desktop.Entities.Transactions;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class Sales {
     private int id;
@@ -14,6 +15,14 @@ public class Sales {
     private int customerId;
     private String customerName;
     private int quantity;
+
+    public LocalDate getInvoiceDate() {
+        return invoice.getInvoiceDate();
+    }
+
+    public int getInvoiceNumber() {
+        return invoice.getInvoiceNumber();
+    }
 
     public int getId() {
         return id;

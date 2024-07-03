@@ -184,7 +184,7 @@ public class BuyDaoImpl extends DatabaseConfiguration implements BuyDao {
         }
     }
 
-    private int generateInvoiceNumber() {
+    public int generateInvoiceNumber() {
         String sql = "SELECT MAX(invoice_number) FROM purchasing";
 
         try (Connection conn = DatabaseConfiguration.getConnection();
