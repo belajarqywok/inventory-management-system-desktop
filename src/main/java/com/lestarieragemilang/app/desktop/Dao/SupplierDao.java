@@ -106,6 +106,6 @@ public class SupplierDao extends DatabaseConfiguration {
                     || supplier.getSupplierAddress().toLowerCase().contains(lowerCaseFilter)
                     || supplier.getSupplierContact().toLowerCase().contains(lowerCaseFilter)
                     || supplier.getSupplierEmail().toLowerCase().contains(lowerCaseFilter);
-        });
+        }); 
     }
 }

@@ -171,7 +171,7 @@ public class SaleDaoImpl extends DatabaseConfiguration implements SaleDao {
     }
 
 public List<Integer> getAllStockIds() {
-    String sql = "SELECT stock_id FROM stock";
+    String sql = "SELECT stock_id FROM stocks";
 
     List<Integer> stockIds = new ArrayList<>();
 
@@ -189,7 +189,7 @@ public List<Integer> getAllStockIds() {
 }
 
 public List<String> getBrandTypePrice(int stockId) {
-    String sql = "SELECT brand, product_type, price FROM stock WHERE stock_id=?";
+    String sql = "SELECT brand, product_type, price FROM stocks WHERE stock_id=?";
 
     List<String> stockDetails = new ArrayList<>();
 
@@ -212,7 +212,7 @@ public List<String> getBrandTypePrice(int stockId) {
 }
 
 public List<Integer> getCustomerIds() {
-    String sql = "SELECT customer_id FROM customer";
+    String sql = "SELECT customer_id FROM customers";
 
     List<Integer> customerIds = new ArrayList<>();
 
@@ -230,7 +230,7 @@ public List<Integer> getCustomerIds() {
 }
 
 public String getCustomerName(int customerId) {
-    String sql = "SELECT customer_name FROM customer WHERE customer_id=?";
+    String sql = "SELECT customer_name FROM customers WHERE customer_id=?";
 
     try (Connection conn = DatabaseConfiguration.getConnection();
          PreparedStatement stmt = conn.prepareStatement(sql)) {
