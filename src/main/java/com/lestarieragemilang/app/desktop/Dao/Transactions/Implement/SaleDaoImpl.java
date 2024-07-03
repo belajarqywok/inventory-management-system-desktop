@@ -127,7 +127,7 @@ public class SaleDaoImpl extends DatabaseConfiguration implements SaleDao {
             while (rs.next()) {
                 Invoice invoice = new Invoice();
                 invoice.setInvoiceNumber(rs.getInt("invoice_number"));
-                // invoice.setInvoiceDate(rs.getDate("sale_date"));
+                invoice.setInvoiceDate(rs.getDate("sale_date").toLocalDate());
                 invoice.setInvoiceType(InvoiceType.SALE);
 
                 Sales sales = new Sales();

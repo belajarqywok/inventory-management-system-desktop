@@ -22,7 +22,7 @@
             <BorderPane layoutX="108.0" layoutY="99.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <center>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                     <children>
+                     <children> 
                         <HBox alignment="CENTER_LEFT" layoutX="47.0" layoutY="111.0" prefHeight="50.0" prefWidth="450.0" spacing="15.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="200.0">
                            <children>
                               <Label text="CARI DATA">
@@ -30,8 +30,8 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <TextField prefHeight="32.0" prefWidth="250.0" style="-fx-background-radius: 7;" />
-                              <JFXButton fx:id="searchStockButton" buttonType="RAISED" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND; -fx-font-weight: bold; -fx-text-fill: #E8E7DE; -fx-border-radius: 10;" text="CARI" textFill="WHITE">
+                              <TextField fx:id="searchTextField" prefHeight="32.0" prefWidth="250.0" style="-fx-background-radius: 7;" />
+                              <JFXButton buttonType="RAISED" onAction="#searchingData" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND; -fx-font-weight: bold; -fx-text-fill: #E8E7DE; -fx-border-radius: 10;" text="CARI" textFill="WHITE">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -118,7 +118,7 @@
                                     <VBox alignment="CENTER" prefHeight="133.0" prefWidth="116.0" spacing="20.0">
                                        <children>
                                           <JFXComboBox fx:id="returnInvoicePurchasing" prefHeight="25.0" prefWidth="122.0" style="-fx-background-radius: 10;" />
-                                          <TextArea fx:id="reuturnReasonField" prefHeight="200.0" prefWidth="200.0" style="-fx-background-radius: 10;" />
+                                          <TextArea fx:id="returnReasonField" prefHeight="200.0" prefWidth="200.0" style="-fx-background-radius: 10;" />
                                        </children>
                                     </VBox>
                                  </children>
@@ -137,7 +137,7 @@
                                     <Font size="14.0" />
                                  </font>
                               </JFXButton>
-                              <JFXButton buttonType="RAISED" onAction="#editReturnButton" prefHeight="30.0" prefWidth="97.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND; -fx-font-weight: bold; -fx-text-fill: #E8E7DE; -fx-border-radius: 10;" text="EDIT" textFill="WHITE">
+                              <JFXButton fx:id="editReturnButtonText" buttonType="RAISED" onAction="#editReturnButton" prefHeight="30.0" prefWidth="97.0" style="-fx-background-color: #131313; -fx-background-radius: 10; -fx-cursor: HAND; -fx-font-weight: bold; -fx-text-fill: #E8E7DE; -fx-border-radius: 10;" text="EDIT" textFill="WHITE">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
