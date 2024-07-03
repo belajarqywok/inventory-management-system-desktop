@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import com.jfoenix.controls.JFXButton;
 import com.lestarieragemilang.app.desktop.Dao.Transactions.Implement.BuyDaoImpl;
 import com.lestarieragemilang.app.desktop.Dao.Transactions.Implement.SaleDaoImpl;
 import com.lestarieragemilang.app.desktop.Entities.Transactions.Invoice;
@@ -56,6 +59,9 @@ public class TransactionForms {
     @FXML
     private TableColumn<Sales, BigDecimal> sellPriceCol, sellSubTotalCol;
 
+    @FXML
+    private JFXButton editBuyButtonText, editSellButtonText;
+
     GenerateRandomID generateRandomID = new GenerateRandomID();
     int buyId = generateRandomID.getId();
     int sellId = generateRandomID.getId();
@@ -71,14 +77,6 @@ public class TransactionForms {
 
     private BuyTablePopulator buyTablePopulator = new BuyTablePopulator();
     private SellTablePopulator sellTablePopulator = new SellTablePopulator();
-
-    public void setBuyDao(BuyDaoImpl buyDao) {
-        this.buyDao = buyDao;
-    }
-
-    public void setSaleDao(SaleDaoImpl saleDao) {
-        this.saleDao = saleDao;
-    }
 
     @FXML
     private void initialize() {
@@ -108,28 +106,10 @@ public class TransactionForms {
 
     private void tablePopulator() {
         try {
-            buyTablePopulator.populateBuyTable(
-                    buySubTotalCol,
-                    buyDateCol,
-                    buyInvoiceCol,
-                    buyOnSupplierNameCol,
-                    buyBrandCol,
-                    buyTypeCol,
-                    buyTotalCol,
-                    buyPriceCol,
-                    buyTable);
-
-            sellTablePopulator.populateSellTable(
-                    sellSubTotalCol,
-                    sellDateCol,
-                    sellInvoiceCol,
-                    sellOnCustomerNameCol,
-                    sellBrandCol,
-                    sellTypeCol,
-                    sellTotalCol,
-                    sellPriceCol,
-                    sellTable);
-
+            buyTablePopulator.populateBuyTable(buyDateCol, buyInvoiceCol, buyOnSupplierNameCol, buyBrandCol, buyTypeCol,
+                    buyTotalCol, buyPriceCol, buySubTotalCol, buyTable);
+            sellTablePopulator.populateSellTable(sellDateCol, sellInvoiceCol, sellOnCustomerNameCol, sellBrandCol,
+                    sellTypeCol, sellTotalCol, sellPriceCol, sellSubTotalCol, sellTable);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -318,35 +298,63 @@ public class TransactionForms {
     @FXML
     private void editBuyButton() {
         Purchasing selectedPurchasing = buyTable.getSelectionModel().getSelectedItem();
+
         if (selectedPurchasing != null) {
-            buyDate.setValue(selectedPurchasing.getInvoice().getInvoiceDate());
-            buyStockIDDropdown.setValue(selectedPurchasing.getStockId());
-            buyBrandField.setText(selectedPurchasing.getBrand());
-            buyTypeField.setText(selectedPurchasing.getProductType());
-            buyPriceField.setText(selectedPurchasing.getPrice().toString());
-            supplierIDDropDown.setValue(selectedPurchasing.getSupplierId());
-            supplierNameField.setText(selectedPurchasing.getSupplierName());
-            buyTotalField.setText(String.valueOf(selectedPurchasing.getQuantity()));
+            if (editBuyButtonText.getText().equals("KONFIRMASI")) {
+                // Confirmation alert
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation");
+                alert.setHeaderText(null);
+                alert.setContentText("Do you want to update the purchasing item?");
 
-            selectedPurchasing.getInvoice().setInvoiceDate(buyDate.getValue());
-            selectedPurchasing.setStockId((int) buyStockIDDropdown.getValue());
-            selectedPurchasing.setBrand(buyBrandField.getText());
-            selectedPurchasing.setProductType(buyTypeField.getText());
-            selectedPurchasing.setPrice(new BigDecimal(buyPriceField.getText()));
-            selectedPurchasing.setSupplierId((int) supplierIDDropDown.getValue());
-            selectedPurchasing.setSupplierName(supplierNameField.getText());
-            selectedPurchasing.setQuantity(Integer.parseInt(buyTotalField.getText()));
-            selectedPurchasing.setSubTotal(
-                    selectedPurchasing.getPrice().multiply(BigDecimal.valueOf(selectedPurchasing.getQuantity())));
-            selectedPurchasing.setPriceTotal(selectedPurchasing.getSubTotal());
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    selectedPurchasing.getInvoice().setInvoiceDate(buyDate.getValue());
+                    selectedPurchasing.setStockId((int) buyStockIDDropdown.getValue());
+                    selectedPurchasing.setBrand(buyBrandField.getText());
+                    selectedPurchasing.setProductType(buyTypeField.getText());
+                    selectedPurchasing.setPrice(new BigDecimal(buyPriceField.getText()));
+                    selectedPurchasing.setSupplierId((int) supplierIDDropDown.getValue());
+                    selectedPurchasing.setSupplierName(supplierNameField.getText());
+                    selectedPurchasing.setQuantity(Integer.parseInt(buyTotalField.getText()));
+                    selectedPurchasing.setSubTotal(
+                            selectedPurchasing.getPrice()
+                                    .multiply(BigDecimal.valueOf(selectedPurchasing.getQuantity())));
+                    selectedPurchasing.setPriceTotal(selectedPurchasing.getSubTotal());
 
-            buyDao.updatePurchasing(selectedPurchasing);
-            loadBuyData();
+                    buyDao.updatePurchasing(selectedPurchasing);
+
+                    buyTable.refresh();
+
+                    editBuyButtonText.setText("EDIT");
+
+                    // Success alert
+                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                    successAlert.setTitle("Success");
+                    successAlert.setHeaderText(null);
+                    successAlert.setContentText("Purchasing item has been successfully updated.");
+
+                    successAlert.showAndWait();
+                }
+            } else {
+                // Populate the fields with the selected purchasing item's details
+                buyDate.setValue(selectedPurchasing.getInvoice().getInvoiceDate());
+                buyStockIDDropdown.setValue(selectedPurchasing.getStockId());
+                buyBrandField.setText(selectedPurchasing.getBrand());
+                buyTypeField.setText(selectedPurchasing.getProductType());
+                buyPriceField.setText(selectedPurchasing.getPrice().toString());
+                supplierIDDropDown.setValue(selectedPurchasing.getSupplierId());
+                supplierNameField.setText(selectedPurchasing.getSupplierName());
+                buyTotalField.setText(String.valueOf(selectedPurchasing.getQuantity()));
+
+                editBuyButtonText.setText("KONFIRMASI");
+            }
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
             alert.setHeaderText(null);
-            alert.setContentText("Please select an item to edit.");
+            alert.setContentText("Please select a purchasing item to edit.");
+
             alert.showAndWait();
         }
     }
@@ -363,35 +371,62 @@ public class TransactionForms {
     @FXML
     private void editSellButton() {
         Sales selectedSales = sellTable.getSelectionModel().getSelectedItem();
+
         if (selectedSales != null) {
-            sellDate.setValue(selectedSales.getInvoice().getInvoiceDate());
-            sellStockIDDropdown.setValue(selectedSales.getStockId());
-            sellBrandField.setText(selectedSales.getBrand());
-            sellTypeField.setText(selectedSales.getProductType());
-            sellPriceField.setText(selectedSales.getPrice().toString());
-            customerIDDropDown.setValue(selectedSales.getCustomerId());
-            customerNameField.setText(selectedSales.getCustomerName());
-            sellTotalField.setText(String.valueOf(selectedSales.getQuantity()));
+            if (editSellButtonText.getText().equals("KONFIRMASI")) {
+                // Confirmation alert
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation");
+                alert.setHeaderText(null);
+                alert.setContentText("Do you want to update the sales item?");
 
-            selectedSales.getInvoice().setInvoiceDate(sellDate.getValue());
-            selectedSales.setStockId((int) sellStockIDDropdown.getValue());
-            selectedSales.setBrand(sellBrandField.getText());
-            selectedSales.setProductType(sellTypeField.getText());
-            selectedSales.setPrice(new BigDecimal(sellPriceField.getText()));
-            selectedSales.setCustomerId((int) customerIDDropDown.getValue());
-            selectedSales.setCustomerName(customerNameField.getText());
-            selectedSales.setQuantity(Integer.parseInt(sellTotalField.getText()));
-            selectedSales
-                    .setSubTotal(selectedSales.getPrice().multiply(BigDecimal.valueOf(selectedSales.getQuantity())));
-            selectedSales.setPriceTotal(selectedSales.getSubTotal());
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    selectedSales.getInvoice().setInvoiceDate(sellDate.getValue());
+                    selectedSales.setStockId((int) sellStockIDDropdown.getValue());
+                    selectedSales.setBrand(sellBrandField.getText());
+                    selectedSales.setProductType(sellTypeField.getText());
+                    selectedSales.setPrice(new BigDecimal(sellPriceField.getText()));
+                    selectedSales.setCustomerId((int) customerIDDropDown.getValue());
+                    selectedSales.setCustomerName(customerNameField.getText());
+                    selectedSales.setQuantity(Integer.parseInt(sellTotalField.getText()));
+                    selectedSales.setSubTotal(
+                            selectedSales.getPrice().multiply(BigDecimal.valueOf(selectedSales.getQuantity())));
+                    selectedSales.setPriceTotal(selectedSales.getSubTotal());
 
-            saleDao.updateSales(selectedSales);
-            loadSellData();
+                    saleDao.updateSales(selectedSales);
+
+                    sellTable.refresh();
+
+                    editSellButtonText.setText("EDIT");
+
+                    // Success alert
+                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                    successAlert.setTitle("Success");
+                    successAlert.setHeaderText(null);
+                    successAlert.setContentText("Sales item has been successfully updated.");
+
+                    successAlert.showAndWait();
+                }
+            } else {
+                // Populate the fields with the selected sales item's details
+                sellDate.setValue(selectedSales.getInvoice().getInvoiceDate());
+                sellStockIDDropdown.setValue(selectedSales.getStockId());
+                sellBrandField.setText(selectedSales.getBrand());
+                sellTypeField.setText(selectedSales.getProductType());
+                sellPriceField.setText(selectedSales.getPrice().toString());
+                customerIDDropDown.setValue(selectedSales.getCustomerId());
+                customerNameField.setText(selectedSales.getCustomerName());
+                sellTotalField.setText(String.valueOf(selectedSales.getQuantity()));
+
+                editSellButtonText.setText("KONFIRMASI");
+            }
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
             alert.setHeaderText(null);
-            alert.setContentText("Please select an item to edit.");
+            alert.setContentText("Please select a sales item to edit.");
+
             alert.showAndWait();
         }
     }

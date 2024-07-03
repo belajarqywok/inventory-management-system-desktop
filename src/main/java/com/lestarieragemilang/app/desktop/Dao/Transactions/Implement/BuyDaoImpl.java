@@ -68,8 +68,8 @@ public class BuyDaoImpl extends DatabaseConfiguration implements BuyDao {
 
         try (Connection conn = DatabaseConfiguration.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setObject(1, purchasing.getInvoice().getInvoiceDate()); // Assuming getInvoiceDate() returns a
-                                                                         // LocalDate
+            stmt.setDate(1, Date.valueOf(purchasing.getInvoice().getInvoiceDate())); // Convert LocalDate to
+                                                                                     // java.sql.Date
             stmt.setInt(2, purchasing.getStockId());
             stmt.setString(3, purchasing.getBrand());
             stmt.setString(4, purchasing.getProductType());
@@ -81,7 +81,13 @@ public class BuyDaoImpl extends DatabaseConfiguration implements BuyDao {
             stmt.setInt(10, purchasing.getQuantity());
             stmt.setInt(11, purchasing.getInvoice().getInvoiceNumber());
 
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Purchasing item updated successfully.");
+            } else {
+                System.out.println("No rows affected. Purchasing item update failed.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -150,7 +156,7 @@ public class BuyDaoImpl extends DatabaseConfiguration implements BuyDao {
             while (rs.next()) {
                 Invoice invoice = new Invoice();
                 invoice.setInvoiceNumber(rs.getInt("invoice_number"));
-                invoice.setInvoiceDate(rs.getDate("purchase_date").toLocalDate()); // Convert java.sql.Date to LocalDate
+                invoice.setInvoiceDate(rs.getDate("purchase_date").toLocalDate());
                 invoice.setInvoiceType(InvoiceType.PURCHASE);
 
                 Purchasing purchasing = new Purchasing();

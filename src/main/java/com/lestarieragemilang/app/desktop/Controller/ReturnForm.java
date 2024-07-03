@@ -65,7 +65,10 @@ public class ReturnForm {
     private JFXComboBox<String> returnInvoicePurchasing;
 
     @FXML
-    private TextArea reuturnReasonField;
+    private TextArea returnReasonField;
+
+    @FXML
+    private JFXButton editReturnButtonText;
 
     @FXML
     private JFXButton searchReturnButton;
@@ -103,11 +106,12 @@ public class ReturnForm {
                 }
             });
 
-            returnInvoicePurchasing.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue != null) {
-                    handleInvoiceSelection(newValue);
-                }
-            });
+            returnInvoicePurchasing.getSelectionModel().selectedItemProperty()
+                    .addListener((observable, oldValue, newValue) -> {
+                        if (newValue != null) {
+                            handleInvoiceSelection(newValue);
+                        }
+                    });
 
             returnTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
                 if (newSelection != null) {
@@ -115,7 +119,9 @@ public class ReturnForm {
                 }
             });
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadDataFromDatabase() throws SQLException {
@@ -125,8 +131,7 @@ public class ReturnForm {
     @FXML
     private void searchingData() throws SQLException {
         returnTable.getItems().setAll(returnDao.searchReturns(
-            searchTextField.getText() 
-        ));
+                searchTextField.getText()));
     }
 
     private void loadInvoiceNumbers(String type) {
@@ -151,12 +156,12 @@ public class ReturnForm {
 
     @FXML
     private void resetReturnButton() {
-        // Reset form fields
         returnDate.setValue(null);
         returnIDIncrement.setText("");
         returnTypeGroup.selectToggle(null);
         returnInvoicePurchasing.getItems().clear();
-        reuturnReasonField.setText("");
+        returnReasonField.setText("");
+        editReturnButtonText.setText("EDIT");
     }
 
     @FXML
@@ -172,12 +177,11 @@ public class ReturnForm {
 
             if (result.get() == ButtonType.OK) {
                 Return newReturn = new Return(
-                    returnDate.getValue(),
-                    returnIDIncrement.getText(),
-                    returnIsBuy.isSelected() ? "PEMBELIAN" : "PENJUALAN",
-                    returnInvoicePurchasing.getValue(),
-                    reuturnReasonField.getText()
-                );
+                        returnDate.getValue(),
+                        returnIDIncrement.getText(),
+                        returnIsBuy.isSelected() ? "PEMBELIAN" : "PENJUALAN",
+                        returnInvoicePurchasing.getValue(),
+                        returnReasonField.getText());
 
                 returnDao.addReturn(newReturn);
 
@@ -191,33 +195,52 @@ public class ReturnForm {
     }
 
     @FXML
-    private void editReturnButton() {
-        Return selectedItem = returnTable.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-            try {
+    private void editReturnButton() throws SQLException {
+        Return selectedReturn = returnTable.getSelectionModel().getSelectedItem();
 
-                Alert alert = new Alert(AlertType.WARNING);
-                alert.setTitle("Mengubah Pengembalian");
+        if (selectedReturn != null) {
+            if (editReturnButtonText.getText().equals("KONFIRMASI")) {
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("KONFIRMASI");
                 alert.setHeaderText(null);
-                alert.setContentText("Apakah Anda Yakin Ingin Mengubah Mengembalian Barang ?.");
+                alert.setContentText("Apakah Anda ingin memperbarui pengembaliannya?");
 
                 Optional<ButtonType> result = alert.showAndWait();
-
                 if (result.get() == ButtonType.OK) {
-                    selectedItem.setReturnDate(returnDate.getValue());
-                    selectedItem.setReturnType(returnIsBuy.isSelected() ? "PEMBELIAN" : "PENJUALAN");
-                    selectedItem.setInvoiceNumber(returnInvoicePurchasing.getValue());
-                    selectedItem.setReason(reuturnReasonField.getText());
+                    selectedReturn.setReturnDate(returnDate.getValue());
+                    selectedReturn.setReturnType(returnIsBuy.isSelected() ? "PEMBELIAN" : "PENJUALAN");
+                    selectedReturn.setInvoiceNumber(returnInvoicePurchasing.getValue());
+                    selectedReturn.setReason(returnReasonField.getText());
 
-                    returnDao.updateReturn(selectedItem);
-                    
-                    returnTable.getItems().clear();
-                    loadDataFromDatabase();
+                    returnDao.updateReturn(selectedReturn);
+
+                    returnTable.refresh();
+
+                    editReturnButtonText.setText("EDIT");
+
+                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                    successAlert.setTitle("Sukses");
+                    successAlert.setHeaderText(null);
+                    successAlert.setContentText("Pengembalian telah berhasil diperbarui.");
+
+                    successAlert.showAndWait();
                 }
+            } else {
+                returnDate.setValue(selectedReturn.getReturnDate());
+                returnIsBuy.setSelected(selectedReturn.getReturnType().equals("PEMBELIAN"));
+                returnInvoicePurchasing.setValue(selectedReturn.getInvoiceNumber());
+                returnReasonField.setText(selectedReturn.getReason());
 
-            } catch (SQLException e) {
-                e.printStackTrace();
+                editReturnButtonText.setText("KONFIRMASI");
             }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informasi");
+            alert.setHeaderText(null);
+            alert.setContentText("Silakan pilih kembali untuk mengedit.");
+
+            alert.showAndWait();
         }
     }
 
@@ -259,7 +282,7 @@ public class ReturnForm {
             }
 
             returnInvoicePurchasing.setValue(selectedItem.invoiceNumberProperty().get());
-            reuturnReasonField.setText(selectedItem.reasonProperty().get());
+            returnReasonField.setText(selectedItem.reasonProperty().get());
         }
     }
 
